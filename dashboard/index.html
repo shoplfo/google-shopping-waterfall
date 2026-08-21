@@ -1,0 +1,2331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome In - Google Shopping</title>
+  <script src="chart.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #264653;
+      --blue: #264653;
+      --coral: #E76F51;
+      --light-blue: #EEF2F3;
+      --green: #5A9E6F;
+      --red: #E76F51;
+      --orange: #E9C46A;
+      --sidebar-bg: #2C2C2C;
+      --sidebar-border: #3a3a3a;
+      --sidebar-text: #9A9A9A;
+      --bg: #FAF8F4;
+      --card-bg: #FFFFFF;
+      --table-header: #F5F2EC;
+      --table-border: #E5E2DC;
+      --text-primary: #2C2C2C;
+      --text-secondary: #9A9A9A;
+      --gray-50: #FAF8F4;
+      --gray-100: #F5F2EC;
+      --gray-200: #E5E2DC;
+      --gray-300: #D5D2CC;
+      --gray-500: #9A9A9A;
+      --gray-700: #575760;
+      --gray-900: #2C2C2C;
+      --radius: 16px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
+      --font-heading: 'DM Serif Display', Georgia, serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text-primary); }
+
+    /* ===== APP LAYOUT (Sidebar + Main) ===== */
+    .app-layout { display: flex; min-height: 100vh; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 50; }
+    .sidebar-logo { padding: 24px 28px; }
+    .sidebar-logo svg { display: block; }
+    .sidebar-logo .logo-sub { font-size: 12px; color: var(--sidebar-text); margin-top: 6px; font-weight: 400; }
+    .sidebar-nav-label { font-size: 11px; font-weight: 500; letter-spacing: 0.5px; color: var(--sidebar-text); padding: 16px 16px 8px 16px; text-transform: uppercase; }
+    .sidebar .nav { display: flex; flex-direction: column; gap: 4px; padding: 0 16px; background: none; border: none; }
+    .sidebar .nav button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 16px; border: none; background: none; cursor: pointer; font-size: 14px; color: var(--sidebar-text); border-radius: 12px; font-weight: 400; text-align: left; border-bottom: none; transition: all 0.15s; }
+    .sidebar .nav button:hover { background: rgba(255,255,255,0.05); color: #ccc; }
+    .sidebar .nav button.active { background: var(--coral); color: #fff; font-weight: 500; }
+    .sidebar .nav button .nav-icon { width: 18px; height: 18px; opacity: 0.7; flex-shrink: 0; }
+    .sidebar .nav button.active .nav-icon { opacity: 1; }
+    .sidebar-spacer { flex: 1; }
+    .sidebar-footer { padding: 20px 24px; display: flex; align-items: center; gap: 12px; }
+    .sidebar-footer .footer-info { flex: 1; }
+    .sidebar-footer .footer-name { font-size: 14px; font-weight: 500; color: #fff; }
+    .sidebar-footer .footer-email { font-size: 12px; color: var(--sidebar-text); }
+    .sidebar-footer .footer-actions { display: flex; gap: 6px; }
+    .sidebar-footer .footer-actions button { padding: 4px 10px; border: none; border-radius: 6px; background: rgba(255,255,255,0.1); color: var(--sidebar-text); font-size: 11px; cursor: pointer; }
+    .sidebar-footer .footer-actions button:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+    /* Legacy header — hidden */
+    .header { display: none; }
+
+    /* ===== MAIN CONTENT ===== */
+    .main { margin-left: 260px; padding: 40px 48px; max-width: none; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .page-header h1 { font-family: var(--font-heading); font-size: 36px; font-weight: 400; color: var(--text-primary); letter-spacing: -0.5px; line-height: 1.05; }
+    .page-header .page-sub { font-size: 14px; color: var(--text-secondary); font-weight: 300; margin-top: 4px; }
+    .page-header-actions { display: flex; align-items: center; gap: 12px; }
+
+    /* ===== CARDS ===== */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 32px; }
+    .card { background: var(--card-bg); border-radius: var(--radius); padding: 20px 24px; box-shadow: none; }
+    .card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 4px; font-weight: 600; }
+    .card .value { font-size: 36px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.5px; font-family: var(--font-body); }
+    .card .sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+    .card.green .value { color: var(--green); }
+    .card.red .value { color: var(--coral); }
+
+    /* ===== PANELS ===== */
+    .panel { background: var(--card-bg); border-radius: var(--radius); box-shadow: none; margin-bottom: 24px; overflow: hidden; }
+    .panel-header { padding: 20px 24px; border-bottom: 1px solid var(--table-border); display: flex; justify-content: space-between; align-items: center; }
+    .panel-header h2 { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .panel-body { padding: 20px 24px; }
+
+    /* ===== TABLES ===== */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; padding: 12px 16px; background: var(--table-header); border-bottom: 1px solid var(--table-border); font-weight: 600; color: var(--text-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--table-border); color: var(--text-primary); }
+    tr:hover td { background: var(--gray-50); }
+    td:first-child { font-weight: 500; }
+
+    /* ===== BADGES ===== */
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 500; text-transform: none; }
+    .badge.success { background: rgba(90,158,111,0.12); color: var(--green); }
+    .badge.error { background: rgba(231,111,81,0.12); color: var(--coral); }
+    .badge.running { background: rgba(233,196,106,0.15); color: #B8860B; }
+    .badge.partial { background: rgba(233,196,106,0.15); color: #B8860B; }
+    .badge.active { background: rgba(90,158,111,0.12); color: var(--green); }
+    .badge.inactive { background: var(--gray-100); color: var(--gray-500); }
+    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* ===== CHART ===== */
+    .chart-container { height: 300px; position: relative; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    @media (max-width: 1000px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ===== BUTTONS ===== */
+    .btn { padding: 10px 20px; border: none; border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; font-weight: 500; font-family: var(--font-body); transition: opacity 0.15s; }
+    .btn-primary { background: var(--coral); color: white; }
+    .btn-danger { background: var(--coral); color: white; }
+    .btn-sm { padding: 6px 14px; font-size: 12px; }
+    .btn:hover { opacity: 0.85; }
+
+    /* ===== FORMS ===== */
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--table-border); border-radius: var(--radius-sm); font-size: 13px; background: var(--gray-100); font-family: var(--font-body); color: var(--text-primary); }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-secondary); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--coral); background: #fff; }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+
+    /* ===== LOADING ===== */
+    .loading { text-align: center; padding: 40px; color: var(--text-secondary); }
+
+    /* ===== SECTIONS ===== */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+    .modal-overlay.active { display: flex; }
+    .modal { background: white; border-radius: var(--radius); padding: 0; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+    .modal h3 { padding: 20px 24px; margin: 0; font-family: var(--font-heading); font-size: 20px; font-weight: 400; color: var(--text-primary); border-bottom: 1px solid var(--table-border); }
+    .modal .modal-body-inner { padding: 24px; }
+    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; padding: 16px 24px; border-top: 1px solid var(--table-border); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .sidebar { width: 0; overflow: hidden; }
+      .main { margin-left: 0; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <svg width="160" height="24" viewBox="0 0 158 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M35.9983 18.7415C36.2279 18.5119 36.4828 18.4439 36.7655 18.5385C37.047 18.6319 37.1773 18.8465 37.1566 19.1799C37.1139 20.2228 36.5094 21.2877 35.3418 22.3721C34.1732 23.4566 32.6607 24 30.8044 24C28.5305 24 26.6731 23.2697 25.2345 21.8091C23.7947 20.3497 23.0748 18.4404 23.0748 16.0823C23.0748 13.7242 23.8304 11.9775 25.3441 10.5273C26.8565 9.07714 28.6655 8.35263 30.7733 8.35263C32.6711 8.35263 34.142 8.79103 35.1861 9.66667C36.229 10.5435 36.7505 11.5345 36.7505 12.6397C36.7505 13.5153 36.3432 14.1626 35.5299 14.5802L29.3023 18.0851C30.1572 19.4406 31.3466 20.119 32.8695 20.119C33.5156 20.119 34.1259 19.9886 34.7004 19.7279C35.2738 19.4672 35.7064 19.1384 35.9994 18.7427L35.9983 18.7415ZM30.2091 9.88587C29.5838 9.88587 29.0774 10.1985 28.692 10.825C28.3056 11.4514 28.1129 12.2336 28.1129 13.1715C28.1129 14.4233 28.2698 15.5181 28.5824 16.4572L31.4932 14.7048C32.0354 14.3287 32.3065 13.7968 32.3065 13.1093C32.3065 12.4217 32.1346 11.7121 31.7897 10.9807C31.4459 10.2504 30.9186 9.88587 30.2091 9.88587Z" fill="#ffffff"/><path d="M39.0647 23.6862C38.5848 23.6862 38.3448 23.4878 38.3448 23.0921V22.9663C38.3448 22.716 38.5479 22.3352 38.9551 21.8242C39.3624 21.3131 39.5654 20.7974 39.5654 20.2748V5.97376C39.5654 5.43153 39.3624 4.90545 38.9551 4.39322C38.5479 3.88214 38.3448 3.52219 38.3448 3.31337V3.18762C38.3448 2.95804 38.5744 2.71808 39.0336 2.46773L43.7579 0.153446C44.1963 -0.0346037 44.5447 -0.0496015 44.8066 0.107299C45.0673 0.263046 45.1977 0.498396 45.1977 0.811043V20.2748C45.1977 20.7962 45.4273 21.3131 45.8864 21.8242C46.3445 22.3352 46.5752 22.716 46.5752 22.9663V23.0921C46.5752 23.4889 46.3249 23.6862 45.8242 23.6862H39.0647Z" fill="#ffffff"/><path d="M55.9005 23.9988C53.5227 23.9988 51.5707 23.2212 50.049 21.6672C48.5261 20.1132 47.7647 18.272 47.7647 16.1446C47.7647 13.7876 48.5365 11.9048 50.0801 10.4962C51.6238 9.08752 53.502 8.37339 55.7136 8.35263C57.5698 8.33186 59.1446 8.75411 60.439 9.62052C61.7323 10.4858 62.3795 11.6072 62.3795 12.9847C62.3795 13.5061 62.1961 13.9445 61.8315 14.2987C61.467 14.654 60.8878 14.8202 60.0952 14.7994C59.3857 14.7579 58.7754 14.4764 58.2643 13.9549C57.7533 13.4334 57.3829 12.8704 57.1534 12.2648C56.9238 11.6602 56.6111 11.1122 56.2143 10.6219C55.8174 10.1316 55.3698 9.88587 54.8691 9.88587C54.2219 9.90779 53.6958 10.2516 53.2885 10.9184C52.8813 11.5864 52.6782 12.4101 52.6782 13.3907C52.6782 15.4351 53.142 17.0733 54.0707 18.3043C54.9994 19.5352 56.235 20.1502 57.7786 20.1502C59.1758 20.1502 60.334 19.5445 61.2524 18.3354C61.4612 18.0851 61.7115 17.9962 62.0034 18.0689C62.2953 18.1416 62.4418 18.3458 62.4418 18.6792C62.4003 20.1398 61.805 21.3915 60.6582 22.4344C59.5103 23.4785 57.9252 23.9988 55.9016 23.9988H55.9005Z" fill="#ffffff"/><path d="M72.391 23.9988C69.9706 23.9988 67.9205 23.2536 66.2419 21.7618C64.5622 20.2701 63.7234 18.3977 63.7234 16.1446C63.7234 13.8914 64.5576 12.0294 66.2269 10.5585C67.8952 9.08752 69.8772 8.35263 72.173 8.35263C74.4688 8.35263 76.5743 9.09329 78.2437 10.5746C79.9119 12.0559 80.7471 13.9341 80.7471 16.2069C80.7471 18.4796 79.9338 20.3221 78.306 21.793C76.6793 23.2639 74.7076 23.9988 72.391 23.9988ZM73.0486 22.4656C74.3834 22.4656 75.0514 21.1827 75.0514 18.6169C75.0514 17.6778 74.9211 16.5622 74.6603 15.2678C74.3996 13.9745 73.9612 12.7539 73.3463 11.6072C72.7302 10.4604 72.0472 9.88587 71.2962 9.88587C70.5452 9.88587 70.0445 10.2101 69.7318 10.8561C69.4192 11.5033 69.2623 12.4828 69.2623 13.798C69.2623 14.4867 69.3453 15.3001 69.5126 16.2392C69.6799 17.1783 69.9083 18.122 70.2014 19.0715C70.4932 20.0209 70.8947 20.8239 71.4058 21.4815C71.9169 22.1391 72.4649 22.4679 73.0486 22.4679V22.4656Z" fill="#ffffff"/><path d="M108.723 20.2748C108.764 20.7962 108.963 21.3188 109.317 21.8392C109.671 22.3606 109.849 22.7471 109.849 22.9974V23.122C109.849 23.5189 109.598 23.7162 109.098 23.7162H102.839C102.338 23.7162 102.088 23.5178 102.088 23.122V22.9974C102.088 22.7679 102.286 22.3918 102.682 21.8703C103.078 21.3488 103.255 20.817 103.214 20.2748L102.901 14.7359C102.818 13.1716 102.609 12.0606 102.276 11.403C101.941 10.7454 101.43 10.4177 100.743 10.4177C100.117 10.4177 99.6363 10.6888 99.3029 11.2311C98.9684 11.7733 98.8022 12.4932 98.8022 13.3908C98.8645 13.8292 98.8957 14.2664 98.8957 14.7048V20.2748C98.8957 20.7962 99.0837 21.3188 99.4587 21.8392C99.8336 22.3606 100.022 22.7471 100.022 22.9974V23.122C100.022 23.5189 99.7713 23.7162 99.2706 23.7162H93.0431C92.5424 23.7162 92.292 23.5178 92.292 23.122V22.9974C92.292 22.7471 92.4743 22.3606 92.84 21.8392C93.2046 21.3177 93.388 20.7962 93.388 20.2748V14.3287C93.388 11.7214 92.6785 10.4166 91.2595 10.4166C90.5707 10.4166 90.0493 10.6877 89.6951 11.2299C89.3398 11.7721 89.1632 12.492 89.1632 13.3896V20.2736C89.1632 20.7951 89.3928 21.3177 89.852 21.838C90.31 22.3595 90.5407 22.7459 90.5407 22.9963V23.1209C90.5407 23.5178 90.2904 23.715 89.7897 23.715H83.0303C82.5296 23.715 82.2792 23.5166 82.2792 23.1209V22.9963C82.2792 22.7459 82.5088 22.3595 82.968 21.838C83.4271 21.3165 83.6567 20.7951 83.6567 20.2736V14.1095C83.6567 13.6919 83.516 13.3319 83.2345 13.0297C82.953 12.7274 82.6761 12.4609 82.405 12.2313C82.1339 12.0017 81.9977 11.7618 81.9977 11.5114V11.418C81.9977 11.1469 82.2481 10.8861 82.7488 10.6358L87.4431 8.47724C87.8181 8.30995 88.1099 8.30995 88.3187 8.47724C88.5276 8.64452 88.6314 8.89487 88.6314 9.22828V10.3543C89.5901 9.01947 90.978 8.35149 92.7927 8.35149C95.1082 8.35149 96.8191 9.20752 97.9254 10.9173C98.3431 10.1039 98.958 9.47286 99.7713 9.02408C100.585 8.5753 101.513 8.35149 102.556 8.35149C104.079 8.35149 105.377 8.86372 106.452 9.88473C107.526 10.908 108.147 12.5866 108.314 14.9228L108.722 20.2736L108.723 20.2748Z" fill="#ffffff"/><path d="M123.837 18.7415C124.067 18.5119 124.322 18.4439 124.604 18.5385C124.886 18.6319 125.016 18.8465 124.995 19.1799C124.953 20.2228 124.348 21.2877 123.181 22.3721C122.012 23.4566 120.499 24 118.643 24C116.369 24 114.512 23.2697 113.073 21.8091C111.633 20.3497 110.914 18.4404 110.914 16.0823C110.914 13.7242 111.669 11.9775 113.183 10.5273C114.695 9.07714 116.504 8.35263 118.612 8.35263C120.51 8.35263 121.981 8.79103 123.025 9.66667C124.068 10.5435 124.589 11.5345 124.589 12.6397C124.589 13.5153 124.182 14.1626 123.369 14.5802L117.141 18.0851C117.996 19.4406 119.185 20.119 120.708 20.119C121.354 20.119 121.965 19.9886 122.539 19.7279C123.113 19.4672 123.545 19.1384 123.838 18.7427L123.837 18.7415ZM118.048 9.88587C117.423 9.88587 116.916 10.1985 116.531 10.825C116.144 11.4514 115.952 12.2336 115.952 13.1715C115.952 14.4233 116.109 15.5181 116.421 16.4572L119.332 14.7048C119.874 14.3287 120.145 13.7968 120.145 13.1093C120.145 12.4217 119.973 11.7121 119.628 10.9807C119.285 10.2504 118.757 9.88587 118.048 9.88587Z" fill="#ffffff"/><path d="M156.558 20.2748C156.599 20.7962 156.798 21.3131 157.152 21.8242C157.506 22.3352 157.684 22.7263 157.684 22.9974V23.122C157.684 23.5189 157.433 23.7162 156.933 23.7162H150.674C150.173 23.7162 149.923 23.5178 149.923 23.122V22.9974C149.923 22.7471 150.121 22.3606 150.517 21.8392C150.913 21.3177 151.09 20.7962 151.049 20.2748L150.736 14.6736C150.653 13.13 150.449 12.0352 150.126 11.388C149.802 10.7419 149.286 10.4177 148.577 10.4177C147.909 10.4177 147.403 10.6888 147.059 11.2311C146.716 11.7733 146.543 12.514 146.543 13.4531V20.2748C146.543 20.7962 146.772 21.3188 147.231 21.8392C147.691 22.3606 147.92 22.7471 147.92 22.9974V23.122C147.92 23.5189 147.67 23.7162 147.169 23.7162H140.41C139.909 23.7162 139.659 23.5178 139.659 23.122V22.9974C139.659 22.7471 139.888 22.3606 140.347 21.8392C140.807 21.3177 141.036 20.7962 141.036 20.2748V14.1107C141.036 13.6723 140.9 13.3019 140.629 12.9997C140.358 12.6974 140.081 12.4367 139.799 12.2175C139.518 11.9983 139.377 11.7641 139.377 11.5137V11.4203C139.377 11.1492 139.627 10.8884 140.128 10.6381L144.509 8.47954C144.904 8.31226 145.202 8.30764 145.4 8.46339C145.599 8.62029 145.698 8.87525 145.698 9.23059V10.7015C146.574 9.13714 148.065 8.35379 150.173 8.35379C151.738 8.35379 153.084 8.86602 154.21 9.88703C155.337 10.9103 155.983 12.5682 156.15 14.8629L156.558 20.2771V20.2748Z" fill="#ffffff"/><path d="M22.7875 8.66185H18.6412C18.1624 8.66185 17.9247 8.86951 17.9247 9.28484V9.40943C17.9247 9.57556 18.0285 9.76361 18.2362 9.97128C18.4439 10.1789 18.6515 10.3762 18.8592 10.5631C19.0669 10.75 19.233 11.0257 19.3576 11.3891C19.4822 11.7526 19.451 12.184 19.2641 12.6824L17.3317 18.2628L14.8063 9.37828C14.6817 8.96296 14.4118 8.7553 13.9953 8.7553L12.094 8.78645C11.7202 8.78645 11.4595 9.01488 11.3141 9.47289L8.72643 18.3262L6.70057 12.154C6.53444 11.6556 6.52867 11.2449 6.68557 10.9231C6.84132 10.6012 7.04437 10.3208 7.29356 10.0809C7.54276 9.84206 7.66735 9.61825 7.66735 9.41059V9.28599C7.66735 8.87067 7.43893 8.663 6.98091 8.663H0.716435C0.237658 8.663 0 8.86028 0 9.25484V9.37944C0 9.69093 0.22266 10.1074 0.670288 10.6266C1.11676 11.1457 1.43402 11.6349 1.62092 12.0917L5.18002 22.371C5.51805 23.3459 6.43638 24 7.46777 24C8.57992 24 9.55016 23.2421 9.81781 22.1622L11.7202 14.4925L13.5984 22.1553C13.8638 23.2386 14.8352 24 15.9496 24H16.2034C17.2706 24 18.212 23.3009 18.5212 22.2799L21.6015 12.0917C21.7676 11.5933 22.1207 11.0892 22.6617 10.5804C23.2016 10.0716 23.4728 9.67132 23.4728 9.38059V9.25599C23.4728 8.86144 23.2443 8.66416 22.7875 8.66416V8.66185Z" fill="#ffffff"/><path d="M129.351 10.3082C128.797 9.87785 128.123 9.06912 127.826 8.4496C127.617 8.01235 127.023 7.7597 126.586 7.96851C125.335 8.56727 124.156 10.9912 127.628 12.484C127.957 12.6259 128.266 12.7563 128.555 12.8763C129.07 13.0897 130.835 13.3481 130.835 14.7141C130.835 14.7175 130.835 15.1721 130.835 15.1755V20.2091C130.835 20.7409 130.623 21.2727 130.197 21.8034C129.771 22.3353 129.559 22.7287 129.559 22.9837V23.1117C129.559 23.5155 129.814 23.7174 130.324 23.7174H137.18C137.711 23.7174 137.977 23.5155 137.977 23.1117V22.9837C137.977 22.7287 137.739 22.3353 137.26 21.8034C136.782 21.2727 136.542 20.7409 136.542 20.2091V11.9729C136.542 11.5922 136.186 11.3188 135.816 11.4065C135.339 11.5195 134.003 11.6845 133.469 11.6649C132.004 11.613 130.668 11.3315 129.349 10.3082H129.351Z" fill="#ffffff"/><path d="M133.697 9.29406C132.612 9.29406 131.73 8.99064 131.05 8.38496C130.369 7.77928 130.029 7.019 130.029 6.10529C130.029 5.19158 130.369 4.4313 131.05 3.82562C131.73 3.21994 132.612 2.91652 133.697 2.91652C134.781 2.91652 135.631 3.21994 136.312 3.82562C136.991 4.4313 137.333 5.19158 137.333 6.10529C137.333 7.019 136.993 7.77928 136.312 8.38496C135.631 8.99064 134.76 9.29406 133.697 9.29406Z" fill="#E76F51"/>
+    </svg>
+    <div class="logo-sub">Google Shopping</div>
+  </div>
+
+  <div class="sidebar-nav-label">NAVIGATION</div>
+  <div class="nav">
+    <button class="active" onclick="showSection('dashboard', this)"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Dashboard</button>
+    <button onclick="showSection('clients', this)"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</button>
+    <button onclick="showSection('master-keywords', this)"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg>Master Keywords</button>
+    <button onclick="showSection('vendors', this)"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg>Vendors</button>
+    <button onclick="showSection('vendor-keywords', this)"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>Vendor Keywords</button>
+    <button onclick="showSection('negatives', this)"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M9 12h6"/></svg>General Negatives</button>
+    <button onclick="showSection('runlogs', this)"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>Run Logs</button>
+  </div>
+
+  <div class="sidebar-nav-label">MANAGEMENT</div>
+  <div class="nav">
+    <button onclick="showSection('settings', this)"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>Settings</button>
+  </div>
+
+  <div class="sidebar-spacer"></div>
+  <div class="sidebar-footer">
+    <div class="footer-info">
+      <div class="footer-name" id="sidebarUserName">Loading...</div>
+      <div class="footer-email" id="sidebarUserEmail"></div>
+    </div>
+    <div class="footer-actions">
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+</aside>
+
+<!-- Legacy header (hidden by CSS, kept for JS compatibility) -->
+<div class="header">
+  <div class="api-key-form">
+    <span id="userDisplay" style="display:none"></span>
+    <button onclick="triggerRun()">Run Engine</button>
+  </div>
+</div>
+
+<div class="main">
+  <!-- ==================== DASHBOARD ==================== -->
+  <div id="section-dashboard" class="section active">
+    <div class="cards" id="healthCards">
+      <div class="card"><div class="label">Active Clients</div><div class="value" id="h-clients">-</div></div>
+      <div class="card"><div class="label">Master Keywords</div><div class="value" id="h-master">-</div></div>
+      <div class="card"><div class="label">General Negatives</div><div class="value" id="h-negatives">-</div></div>
+      <div class="card green"><div class="label">Runs (24h)</div><div class="value" id="h-runs">-</div></div>
+      <div class="card red"><div class="label">Errors (24h)</div><div class="value" id="h-errors">-</div></div>
+      <div class="card"><div class="label">Queries (24h)</div><div class="value" id="h-queries">-</div></div>
+      <div class="card green"><div class="label">Negatives Added (24h)</div><div class="value" id="h-negs">-</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><h2>Queries Processed (30 Days)</h2></div>
+        <div class="panel-body"><div class="chart-container"><canvas id="chartQueries"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h2>Negatives Added (30 Days)</h2></div>
+        <div class="panel-body"><div class="chart-container"><canvas id="chartNegatives"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><h2>Client Performance (30 Days)</h2></div>
+      <div class="panel-body"><table id="perfTable"><thead><tr><th>Client</th><th>Status</th><th>Runs</th><th>Success</th><th>Errors</th><th>Queries</th><th>Negatives Added</th><th>Last Run</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- ==================== CLIENTS (list) ==================== -->
+  <div id="section-clients" class="section">
+    <div class="panel">
+      <div class="panel-header"><h2>Clients</h2><button class="btn btn-primary rbac-agency-plus" onclick="showAddClientModal()">+ Add Client</button></div>
+      <div class="panel-body"><table id="clientsTable"><thead><tr><th>Name</th><th>Google Ads CID</th><th>Prefix</th><th>Status</th><th>Google Ads</th><th>Threshold</th><th>Vendors</th><th>Sync</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- ==================== CLIENT DETAIL (vendor assignments) ==================== -->
+  <div id="section-client-detail" class="section">
+    <div style="margin-bottom:16px">
+      <button class="btn" style="background:var(--gray-200);color:var(--gray-700)" onclick="backToClients()">&larr; Back to Clients</button>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Assigned Vendors — <span id="clientVendorsName"></span></h2>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm rbac-manager-plus" style="background:var(--gray-200);color:var(--gray-700)" onclick="testGoogleAdsConnection()">Test Connection</button>
+          <button class="btn btn-sm rbac-manager-plus" style="background:#2A9D8F;color:#fff" onclick="createAllCampaigns()">Create All</button>
+          <button class="btn btn-sm rbac-manager-plus" style="background:#4285F4;color:#fff" onclick="downloadAllCSV()">Download All CSV</button>
+          <button class="btn btn-primary btn-sm rbac-agency-plus" onclick="showAssignVendorModal()">+ Assign Vendor</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <table id="clientVendorsTable"><thead><tr><th>Vendor</th><th>Brand KW</th><th>Product KW</th><th>Campaigns</th><th>Sync Status</th><th></th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+
+    <!-- Campaign optimizations panel (income exclusion, audiences, URL audit) -->
+    <div class="panel rbac-agency-plus">
+      <div class="panel-header">
+        <h2>Campaign Optimizations</h2>
+      </div>
+      <div class="panel-body">
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Observation Audiences</label>
+            <button class="btn btn-sm" onclick="applyClientObservationAudiences()" style="white-space:nowrap">Apply Global Audiences to All Campaigns</button>
+            <div class="sub" style="font-size:11px;color:var(--gray-500);margin-top:4px">Attaches the audience IDs configured in Settings as Observation (non-narrowing).</div>
+          </div>
+          <div class="form-group">
+            <label>Master Negatives SharedSet</label>
+            <button class="btn btn-sm" onclick="syncClientMasterNegatives()" style="white-space:nowrap">Sync Master Negatives to All Campaigns</button>
+            <div id="clientMasterSetStatus" class="sub" style="font-size:11px;color:var(--gray-500);margin-top:4px"></div>
+          </div>
+          <div class="form-group">
+            <label>Mobile App Block (account-wide)</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="btn btn-sm" onclick="blockClientMobileApps()" style="white-space:nowrap">Apply Mobile App Block</button>
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:400">
+                <input id="clientBlockAppsFlag" type="checkbox" onchange="toggleClientBlockApps()" />
+                <span>Auto on new campaigns</span>
+              </label>
+            </div>
+            <div id="clientMobileBlockStatus" class="sub" style="font-size:11px;color:var(--gray-500);margin-top:4px"></div>
+          </div>
+          <div class="form-group" style="grid-column:1 / -1">
+            <label>URL Tracking Audit</label>
+            <button class="btn btn-sm" onclick="runClientUrlAudit()">Scan for Stale UTM / Tracking Templates</button>
+            <div id="clientUrlAuditResult" style="margin-top:8px;font-size:13px"></div>
+          </div>
+        </div>
+        <div id="clientOptStatus" style="margin-top:10px;font-size:13px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MASTER KEYWORDS ==================== -->
+  <div id="section-master-keywords" class="section">
+    <div class="panel">
+      <div class="panel-header"><h2>Master Keywords</h2><button class="btn btn-primary btn-sm" onclick="showAddKeywordModal('master')">+ Add</button></div>
+      <div class="panel-body">
+        <div style="display:flex;gap:12px;margin-bottom:12px">
+          <div class="form-group" style="flex:1;margin-bottom:0"><input id="masterSearch" placeholder="Search keywords..." oninput="filterMasterKeywords()" /></div>
+          <div class="form-group" style="width:200px;margin-bottom:0"><select id="masterCategoryFilter" onchange="filterMasterKeywords()"><option value="">All Categories</option></select></div>
+        </div>
+        <div style="max-height:600px;overflow-y:auto"><table id="masterTable"><thead><tr><th>Keyword</th><th>Category</th><th></th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VENDORS ==================== -->
+  <div id="section-vendors" class="section">
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Vendors <span id="vendorCount" style="font-size:14px;font-weight:normal;color:var(--gray-500)"></span></h2>
+        <button class="btn btn-primary btn-sm rbac-manager-plus" onclick="showAddVendorModal()">+ Add Vendor</button>
+      </div>
+      <div class="panel-body">
+        <div style="display:flex;gap:12px;margin-bottom:12px;align-items:center">
+          <div class="form-group" style="flex:1;margin-bottom:0"><input id="vendorSearch" placeholder="Search vendors..." oninput="filterVendorsList()" /></div>
+          <select id="vendorStatusFilter" onchange="filterVendorsList()" style="padding:7px 10px;border:1px solid var(--gray-300);border-radius:6px;font-size:13px;background:#fff">
+            <option value="active">Active</option>
+            <option value="archived">Archived</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+        <table id="vendorsListTable"><thead><tr><th>Vendor Name</th><th>Brand Keywords</th><th>Product Keywords</th><th>Actions</th></tr></thead><tbody></tbody></table>
+        <div id="vendorPagination" style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:13px;color:var(--gray-700)">
+          <span id="vendorPageInfo"></span>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-sm" id="vendorPrevBtn" onclick="changeVendorPage(-1)">← Prev</button>
+            <button class="btn btn-sm" id="vendorNextBtn" onclick="changeVendorPage(1)">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VENDOR KEYWORDS ==================== -->
+  <div id="section-vendor-keywords" class="section">
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Vendor Keywords</h2>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm" style="background:var(--gray-200);color:var(--gray-700)" onclick="showImportCSVModal()">Import CSV</button>
+          <button class="btn btn-primary btn-sm" onclick="showAddVendorKeywordsModal()">+ Add Keywords</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+          <div class="form-group" style="width:200px;margin-bottom:0">
+            <select id="vkVendorFilter" onchange="loadVendorKeywords()"><option value="">All Vendors</option></select>
+          </div>
+          <div class="form-group" style="width:160px;margin-bottom:0">
+            <select id="vkTypeFilter" onchange="loadVendorKeywords()">
+              <option value="">All Types</option>
+              <option value="brand">Brand</option>
+              <option value="product">Product</option>
+            </select>
+          </div>
+          <div class="form-group" style="width:130px;margin-bottom:0">
+            <select id="vkStatusFilter" onchange="loadVendorKeywords()">
+              <option value="active">Active</option>
+              <option value="archived">Archived</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1;min-width:200px;margin-bottom:0">
+            <input id="vkSearch" placeholder="Search keywords..." oninput="loadVendorKeywords()" />
+          </div>
+        </div>
+        <div id="vkInfo" style="font-size:12px;color:var(--gray-500);margin-bottom:8px"></div>
+        <div id="vkBulkBar" style="display:none;padding:8px 12px;margin-bottom:8px;background:var(--light-blue);border-radius:6px;display:none;align-items:center;gap:10px;font-size:13px">
+          <strong id="vkSelectedCount">0 selected</strong>
+          <button class="btn btn-sm" style="background:var(--orange);color:#333" onclick="bulkKeywordAction('archive')">Archive</button>
+          <button class="btn btn-sm" style="background:var(--green);color:#fff" onclick="bulkKeywordAction('restore')">Activate</button>
+          <button class="btn btn-sm btn-danger" onclick="bulkKeywordAction('delete')">Delete</button>
+          <button class="btn btn-sm" onclick="clearKeywordSelection()">Clear</button>
+        </div>
+        <div style="max-height:600px;overflow-y:auto"><table id="vendorKeywordsTable"><thead><tr><th style="width:30px"><input type="checkbox" id="vkSelectAll" onchange="toggleAllKeywords(this.checked)" /></th><th>Keyword</th><th>Vendor</th><th>Campaign Type</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== GENERAL NEGATIVES ==================== -->
+  <div id="section-negatives" class="section">
+    <div class="panel">
+      <div class="panel-header">
+        <h2>General Negatives (Universal Blocklist)</h2>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm rbac-manager-plus" style="background:#8E7CC3;color:#fff" onclick="syncAllClientsNegatives()">Sync All Clients</button>
+          <button class="btn btn-primary btn-sm" onclick="showAddKeywordModal('negative')">+ Add</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div id="negativesSyncBanner" style="display:none;padding:10px 12px;margin-bottom:10px;border-radius:6px;font-size:13px"></div>
+        <div id="negativesSyncResult" style="display:none;padding:10px 12px;margin-bottom:10px;border-radius:6px;font-size:13px;background:var(--light-blue);white-space:pre-wrap;font-family:monospace;max-height:240px;overflow-y:auto"></div>
+        <div style="max-height:500px;overflow-y:auto"><table id="negativesTable"><thead><tr><th>Keyword</th><th>Match Type</th><th>Reason</th><th></th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== RUN LOGS ==================== -->
+  <div id="section-runlogs" class="section">
+    <div class="panel">
+      <div class="panel-header"><h2>Recent Runs</h2><button class="btn btn-primary btn-sm" onclick="loadRunLogs()">Refresh</button></div>
+      <div class="panel-body"><table id="logsTable"><thead><tr><th>Client</th><th>Started</th><th>Status</th><th>Queries</th><th>Matched</th><th>Negatives</th><th>Duration</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- ==================== SETTINGS ==================== -->
+  <div id="section-settings" class="section">
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><h2>API Connection</h2></div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label>API Secret Key</label>
+            <div style="display:flex;gap:8px">
+              <input id="settings-api-key" type="password" placeholder="Enter your API key" />
+              <button class="btn btn-sm" onclick="toggleKeyVisibility('settings-api-key', this)" style="white-space:nowrap">Show</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn btn-primary" onclick="saveSettings()">Save & Connect</button>
+            <button class="btn" onclick="testConnection()">Test Connection</button>
+          </div>
+          <div id="connection-status" style="margin-top:12px;font-size:13px"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h2>Google Ads API (Global)</h2></div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label>Developer Token</label>
+            <input id="settings-dev-token" type="password" value="" disabled />
+            <div class="sub" style="font-size:11px;color:var(--gray-500);margin-top:4px">Set in server .env file</div>
+          </div>
+          <div class="form-group">
+            <label>OAuth Client ID</label>
+            <input id="settings-client-id" placeholder="Per-client — stored in Supabase" disabled />
+          </div>
+          <div class="form-group">
+            <label>OAuth Client Secret</label>
+            <input id="settings-client-secret" type="password" placeholder="Per-client — stored in Supabase" disabled />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>Engine Defaults</h2></div>
+      <div class="panel-body">
+        <div class="sub" style="font-size:12px;color:var(--gray-500);margin-bottom:12px">
+          Applied to new clients and the hourly cron. Existing clients keep their per-client overrides.
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Default Date Range</label>
+            <select id="settings-date-range">
+              <option value="TODAY">Today</option>
+              <option value="YESTERDAY">Yesterday</option>
+              <option value="LAST_7_DAYS">Last 7 Days</option>
+              <option value="LAST_30_DAYS">Last 30 Days</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Default Impression Threshold</label>
+            <input id="settings-threshold" type="number" min="0" value="0" />
+          </div>
+          <div class="form-group">
+            <label>Campaign Name Prefix</label>
+            <input id="settings-campaign-prefix" placeholder="ADS" maxlength="40" />
+            <p style="font-size:12px;color:var(--gray-500);margin:4px 0 0">
+              Every campaign this app creates is named
+              <code>{prefix} | {Vendor} | Shopping | {Tier}</code>.
+              Changing this only affects campaigns created afterwards.
+            </p>
+          </div>
+          <div class="form-group">
+            <label>Merchant Center Feed Label</label>
+            <input id="settings-feed-label" placeholder="US" maxlength="40" />
+            <p style="font-size:12px;color:var(--gray-500);margin:4px 0 0">
+              Applied to new Shopping campaigns (e.g. <code>US</code>, <code>GB</code>, <code>CA</code>,
+              <code>AU</code>). Leave blank to use your Google Ads account default.
+            </p>
+          </div>
+          <div class="form-group">
+            <label>Default MCC Account ID</label>
+            <input id="settings-default-mcc" placeholder="e.g. 123-456-7890 (optional)" />
+          </div>
+          <div class="form-group">
+            <label>Hourly Cron</label>
+            <label style="display:flex;align-items:center;gap:8px;font-weight:400">
+              <input id="settings-cron-enabled" type="checkbox" />
+              <span>Run engine automatically every hour</span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Block Mobile Apps by Default</label>
+            <label style="display:flex;align-items:center;gap:8px;font-weight:400">
+              <input id="settings-default-block-apps" type="checkbox" />
+              <span>Auto-apply account-wide mobile-app block to new clients</span>
+            </label>
+            <div class="sub" style="font-size:11px;color:var(--gray-500);margin-top:4px">
+              Uses a <code>CustomerNegativeCriterion</code> on the category below. One call, covers Shopping + PMax.
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Mobile App Category ID</label>
+            <input id="settings-mobile-app-cat" placeholder="69500" />
+            <div class="sub" style="font-size:11px;color:var(--gray-500);margin-top:4px">Google's catch-all apps category. Rarely needs to change.</div>
+          </div>
+          <div class="form-group" style="grid-column:1 / -1">
+            <label>Default Observation Audiences (in-market audience criterion IDs)</label>
+            <textarea id="settings-observation-audiences" rows="3" placeholder="One ID per line, e.g.&#10;90010&#10;90074" style="width:100%;font-family:monospace;font-size:13px"></textarea>
+            <div class="sub" style="font-size:11px;color:var(--gray-500);margin-top:4px">
+              Attached to new campaigns as <strong>Observation</strong> (not Targeting) so reach is not narrowed.
+              Find IDs in Google Ads → Tools → Audience Manager → Custom segments, or use the public taxonomy.
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+          <button class="btn btn-primary" onclick="saveEngineDefaults()">Save Defaults</button>
+          <span id="settings-save-status" style="font-size:13px"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Management (admin only) -->
+    <div class="panel" id="user-management-panel">
+      <div class="panel-header"><h2>User Management</h2><button class="btn btn-primary btn-sm" onclick="showAddUserModal()">+ Add User</button></div>
+      <div class="panel-body">
+        <table id="usersTable"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Assigned Clients</th><th>Actions</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .app-layout -->
+
+<!-- ==================== MODALS ==================== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+let allMasterKeywords = [];
+let chartsInitialized = false;
+let chartQueries, chartNegatives;
+
+// API helpers (session-based, no API key needed)
+function headers() { return { 'Content-Type': 'application/json' }; }
+async function api(path, opts = {}) {
+  const res = await fetch('/api' + path, { headers: headers(), ...opts });
+  if (res.status === 401) { window.location.href = '/login.html'; return; }
+  if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || res.statusText); }
+  return res.json();
+}
+
+async function logout() {
+  await fetch('/api/auth/logout', { method: 'POST' });
+  window.location.href = '/login.html';
+}
+
+// Current user state
+window.currentUser = null;
+
+// Load current user info and apply role visibility
+fetch('/api/auth/me').then(r => r.json()).then(d => {
+  if (d.user) {
+    window.currentUser = d.user;
+    document.getElementById('userDisplay').textContent = d.user.email;
+    applyRoleVisibility(d.user.role);
+  }
+}).catch(() => { window.location.href = '/login.html'; });
+
+/**
+ * Show/hide nav tabs and action buttons based on user role.
+ * Role hierarchy: client < agency < account_manager < admin
+ */
+function applyRoleVisibility(role) {
+  const navButtons = document.querySelectorAll('.sidebar .nav button');
+  const tabMap = {
+    'Dashboard': true,
+    'Clients': true,
+    'Master Keywords': ['account_manager', 'admin'],
+    'Vendors': true,
+    'Vendor Keywords': ['account_manager', 'admin'],
+    'General Negatives': ['account_manager', 'admin'],
+    'Run Logs': true,
+    'Settings': ['admin'],
+  };
+
+  navButtons.forEach(btn => {
+    const label = btn.textContent.trim();
+    const allowed = tabMap[label];
+    if (allowed === true) {
+      btn.style.display = '';
+    } else if (Array.isArray(allowed)) {
+      btn.style.display = allowed.includes(role) ? '' : 'none';
+    }
+  });
+
+  // Show user management section if admin
+  const userMgmtPanel = document.getElementById('user-management-panel');
+  if (userMgmtPanel) {
+    userMgmtPanel.style.display = role === 'admin' ? '' : 'none';
+  }
+
+  // Update sidebar footer with user info
+  const nameEl = document.getElementById('sidebarUserName');
+  const emailEl = document.getElementById('sidebarUserEmail');
+  if (nameEl && window.currentUser) nameEl.textContent = window.currentUser.name || window.currentUser.email.split('@')[0];
+  if (emailEl && window.currentUser) emailEl.textContent = window.currentUser.email;
+
+  // Hide elements by RBAC class
+  document.querySelectorAll('.rbac-agency-plus').forEach(el => {
+    el.style.display = ['agency', 'account_manager', 'admin'].includes(role) ? '' : 'none';
+  });
+  document.querySelectorAll('.rbac-manager-plus').forEach(el => {
+    el.style.display = ['account_manager', 'admin'].includes(role) ? '' : 'none';
+  });
+  document.querySelectorAll('.rbac-admin-only').forEach(el => {
+    el.style.display = role === 'admin' ? '' : 'none';
+  });
+}
+
+/**
+ * Check if current user has permission for a given minimum role level.
+ */
+function hasRole(...roles) {
+  return window.currentUser && roles.includes(window.currentUser.role);
+}
+
+// Navigation
+function showSection(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar .nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+
+  if (name === 'dashboard') loadDashboard();
+  if (name === 'clients') loadClients();
+  if (name === 'master-keywords') loadMasterKeywordsView();
+  if (name === 'vendors') loadVendorsView();
+  if (name === 'vendor-keywords') loadVendorKeywordsView();
+  if (name === 'negatives') { loadGeneralNegatives(); renderNegativesSyncBanner(); }
+  if (name === 'runlogs') loadRunLogs();
+  if (name === 'settings') loadSettings();
+}
+
+// ==================== DASHBOARD ====================
+async function loadDashboard() {
+  try {
+    const [health, perf, daily] = await Promise.all([
+      api('/logs/stats/health'),
+      api('/logs/stats/performance'),
+      api('/logs/stats/daily?days=30'),
+    ]);
+
+    document.getElementById('h-clients').textContent = health.active_clients || 0;
+    document.getElementById('h-master').textContent = health.master_keyword_count || 0;
+    document.getElementById('h-negatives').textContent = health.general_negative_count || 0;
+    document.getElementById('h-runs').textContent = health.runs_last_24h || 0;
+    document.getElementById('h-errors').textContent = health.errors_last_24h || 0;
+    document.getElementById('h-queries').textContent = (health.queries_processed_24h || 0).toLocaleString();
+    document.getElementById('h-negs').textContent = (health.negatives_added_24h || 0).toLocaleString();
+
+    // Performance table
+    const tbody = document.querySelector('#perfTable tbody');
+    tbody.innerHTML = perf.map(p => `<tr>
+      <td><strong>${p.client_name}</strong></td>
+      <td><span class="badge ${p.is_active ? 'active' : 'inactive'}">${p.is_active ? 'Active' : 'Inactive'}</span></td>
+      <td>${p.total_runs_30d}</td>
+      <td>${p.successful_runs_30d}</td>
+      <td>${p.failed_runs_30d}</td>
+      <td>${(p.total_queries_30d || 0).toLocaleString()}</td>
+      <td>${(p.total_negatives_30d || 0).toLocaleString()}</td>
+      <td>${p.last_run_at ? new Date(p.last_run_at).toLocaleString() : 'Never'} ${p.last_run_status ? `<span class="badge ${p.last_run_status}">${p.last_run_status}</span>` : ''}</td>
+    </tr>`).join('');
+
+    // Charts
+    renderCharts(daily);
+  } catch (err) {
+    console.error('Dashboard load error:', err);
+  }
+}
+
+function renderCharts(daily) {
+  const sorted = [...daily].sort((a, b) => a.run_date.localeCompare(b.run_date));
+  const labels = sorted.map(d => d.run_date);
+  const queries = sorted.map(d => d.queries_processed || 0);
+  const matched = sorted.map(d => d.queries_matched || 0);
+  const negatives = sorted.map(d => d.negatives_added || 0);
+  const genNegs = sorted.map(d => d.general_negatives_added || 0);
+
+  const chartOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { x: { ticks: { maxTicksLimit: 10 } } } };
+
+  if (chartQueries) chartQueries.destroy();
+  if (chartNegatives) chartNegatives.destroy();
+
+  chartQueries = new Chart(document.getElementById('chartQueries'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Queries Processed', data: queries, borderColor: '#2E75B6', backgroundColor: 'rgba(46,117,182,0.1)', fill: true, tension: 0.3 },
+        { label: 'Queries Matched', data: matched, borderColor: '#34A853', backgroundColor: 'rgba(52,168,83,0.1)', fill: true, tension: 0.3 },
+      ],
+    },
+    options: chartOpts,
+  });
+
+  chartNegatives = new Chart(document.getElementById('chartNegatives'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Negatives Added', data: negatives, backgroundColor: '#EA4335' },
+        { label: 'General Negatives', data: genNegs, backgroundColor: '#FBBC04' },
+      ],
+    },
+    options: { ...chartOpts, scales: { ...chartOpts.scales, x: { ...chartOpts.scales.x, stacked: true }, y: { stacked: true } } },
+  });
+}
+
+// ==================== CLIENTS ====================
+async function loadClients() {
+  try {
+    const data = await api('/clients');
+    // Load vendor counts per client
+    const vendorCounts = {};
+    for (const c of data) {
+      try {
+        const cv = await api('/clients/' + c.id + '/vendors');
+        vendorCounts[c.id] = cv.length;
+      } catch { vendorCounts[c.id] = 0; }
+    }
+    const tbody = document.querySelector('#clientsTable tbody');
+    tbody.innerHTML = data.map(c => `<tr>
+      <td><strong>${c.name}</strong></td>
+      <td>${c.google_ads_customer_id}</td>
+      <td>${c.campaign_prefix}</td>
+      <td><span class="badge ${c.is_active ? 'active' : 'inactive'}">${c.is_active ? 'Active' : 'Archived'}</span></td>
+      <td>${c.has_refresh_token
+        ? '<span class="badge" style="background:#2A9D8F;color:#fff">Connected</span>'
+        : `<button class="btn btn-sm" style="background:#4285F4;color:#fff" onclick="connectGoogleAds('${c.id}')">Connect</button>`}</td>
+      <td>${c.impression_threshold}</td>
+      <td><a href="#" onclick="manageClientVendors('${c.id}');return false" style="color:var(--coral)">${vendorCounts[c.id] || 0} vendors</a></td>
+      <td>${renderSyncCell(c)}</td>
+      <td style="white-space:nowrap">
+        ${hasRole('account_manager','admin') ? `<button class="btn btn-sm btn-primary" onclick="triggerClientRun('${c.id}')">Run</button>` : ''}
+        ${hasRole('account_manager','admin') ? `<button class="btn btn-sm" style="background:#8E7CC3;color:#fff" onclick="syncClientFromList('${c.id}', '${c.name.replace(/'/g, "\\'")}')" title="Push negatives to Google Ads (self-heals if Master SharedSet was deleted)">Sync</button>` : ''}
+        ${hasRole('account_manager','admin') ? `<button class="btn btn-sm" style="background:var(--orange);color:var(--gray-900)" onclick="rebuildClientMasterNegatives('${c.id}', '${c.name.replace(/'/g, "\\'")}')" title="Force-create a new Master Negatives SharedSet (use if the old one was deleted in the Ads UI and you want to rebuild immediately)">Rebuild</button>` : ''}
+        ${hasRole('agency','account_manager','admin') ? `<button class="btn btn-sm" style="background:var(--gray-200);color:var(--gray-700)" onclick="showEditClientModal('${c.id}')">Edit</button>` : ''}
+        ${hasRole('agency','account_manager','admin') ? (c.is_active
+          ? `<button class="btn btn-sm" style="background:var(--orange);color:#fff" onclick="archiveClient('${c.id}')">Archive</button>`
+          : `<button class="btn btn-sm btn-primary" onclick="unarchiveClient('${c.id}')">Restore</button>`) : ''}
+        ${hasRole('admin') ? `<button class="btn btn-sm btn-danger" onclick="showDeleteClientModal('${c.id}', '${c.name.replace(/'/g, "\\'")}')">Delete</button>` : ''}
+      </td>
+    </tr>`).join('');
+  } catch (err) { console.error(err); }
+}
+
+function renderSyncCell(c) {
+  const ts = c.master_negatives_synced_at;
+  if (!ts) {
+    return '<span title="Master negatives have never been synced to this client\'s Google Ads account" style="color:var(--red);font-weight:600">● Never</span>';
+  }
+  const date = new Date(ts);
+  const ageMs = Date.now() - date.getTime();
+  const ageH = ageMs / (1000 * 60 * 60);
+  let color, label;
+  if (ageH < 1) { color = 'var(--green)'; label = 'Recent'; }
+  else if (ageH < 24) { color = 'var(--orange)'; label = `${Math.round(ageH)}h ago`; }
+  else { color = 'var(--red)'; label = `${Math.round(ageH / 24)}d ago`; }
+  return `<span title="Last synced: ${date.toLocaleString()}" style="color:${color};font-weight:600;white-space:nowrap">● ${label}</span>`;
+}
+
+function formatSetLine(label, x) {
+  if (!x) return `${label}: (no data)`;
+  // Attached count is only meaningful for SharedSets (Master). Campaign-level
+  // negatives (Brand/Product) write directly to the campaign — surface the
+  // target campaign count instead.
+  let suffix;
+  if (Array.isArray(x.campaignIds)) {
+    suffix = x.campaignIds.length
+      ? ` on ${x.campaignIds.length} campaign${x.campaignIds.length > 1 ? 's' : ''}`
+      : ' (no target campaigns)';
+  } else {
+    suffix = ` — attached ${x.attached || 0} new${x.attachSkipped ? `, ${x.attachSkipped} already linked` : ''}`;
+  }
+  const recoveredTag = x.recovered ? ' [recovered from deleted set]' : '';
+  const rebuiltTag = x.rebuilt ? ' [rebuilt]' : '';
+  return `${label}: +${x.added}, -${x.removed} (total ${x.total})${suffix}${recoveredTag}${rebuiltTag}`;
+}
+
+/**
+ * Collect all errorDetail strings from a result payload so the alert can
+ * surface them in full — no more silent Railway-only warnings.
+ */
+function collectErrorDetails(r) {
+  const details = [];
+  const push = (label, x) => {
+    if (x && x.errorDetail) details.push(`${label}: ${x.errorDetail}`);
+  };
+  push('Master Negatives', r.general);
+  if (Array.isArray(r.vendors)) {
+    for (const v of r.vendors) {
+      push(`${v.vendor} Brand`, v.brand);
+      push(`${v.vendor} Product`, v.product);
+    }
+  } else {
+    const vn = r.vendor ? `${r.vendor} ` : '';
+    push(`${vn}Brand`, r.brand);
+    push(`${vn}Product`, r.product);
+  }
+  return details;
+}
+
+/**
+ * Handles two result shapes:
+ *   Client-wide sync:  { general, vendors: [{ vendor, brand, product }, ...] }
+ *   Vendor-scoped sync: { vendor, general, brand, product }
+ *   Rebuild:           { general }
+ */
+function formatWaterfallResult(r) {
+  const lines = [];
+  if (r.general) lines.push(formatSetLine('Master Negatives', r.general));
+  if (Array.isArray(r.vendors)) {
+    for (const v of r.vendors) {
+      lines.push('');
+      lines.push(`• ${v.vendor}`);
+      lines.push(`    ${formatSetLine('Brand', v.brand)}`);
+      lines.push(`    ${formatSetLine('Product', v.product)}`);
+    }
+  } else if (r.brand || r.product) {
+    if (r.vendor) lines.push(`• ${r.vendor}`);
+    lines.push(formatSetLine('Brand', r.brand));
+    lines.push(formatSetLine('Product', r.product));
+  }
+  const errs = collectErrorDetails(r);
+  if (errs.length) {
+    lines.push('');
+    lines.push('⚠ ERRORS:');
+    for (const e of errs) lines.push(`  ${e}`);
+  }
+  return lines.join('\n');
+}
+
+async function syncClientFromList(clientId, clientName) {
+  if (!confirm(`Sync negatives to ${clientName}'s Google Ads account?\n\n• Master Negatives (SharedSet) — attached to all campaigns\n• Brand / Product keywords — direct campaign-level negatives per vendor`)) return;
+  try {
+    const r = await api('/clients/' + clientId + '/sync-master-negatives', { method: 'POST' });
+    alert(`${clientName} synced.\n\n${formatWaterfallResult(r)}`);
+    loadClients();
+  } catch (err) {
+    alert('Sync failed: ' + err.message);
+  }
+}
+
+async function rebuildClientMasterNegatives(clientId, clientName) {
+  if (!confirm(`Rebuild Master Negatives SharedSet for ${clientName}?\n\nThis force-creates a NEW SharedSet (use when the old one was deleted in the Google Ads UI), pushes all master keywords, and re-attaches to every tracked campaign.\n\nBrand/Product negatives are not rebuilt — they're campaign-level and self-heal on regular Sync.`)) return;
+  try {
+    const r = await api('/clients/' + clientId + '/rebuild-master-negatives', { method: 'POST' });
+    alert(`${clientName} Master Negatives rebuilt.\n\n${formatWaterfallResult(r)}`);
+    loadClients();
+  } catch (err) {
+    alert('Rebuild failed: ' + err.message);
+  }
+}
+
+function showAddClientModal() {
+  document.getElementById('modalContent').innerHTML = `
+    <h3>Add New Client</h3>
+    <div class="form-group"><label>Client Name</label><input id="f-name" placeholder="Acme Retail" /></div>
+    <div class="form-group"><label>Google Ads Customer ID</label><input id="f-cid" placeholder="123-456-7890" /></div>
+    <div class="form-group"><label>Merchant Center ID</label><input id="f-merchant" placeholder="123456789" /></div>
+    <div class="form-group"><label>MCC Account ID <span style="font-size:11px;color:var(--gray-500)">(if managed via MCC)</span></label><input id="f-mcc" placeholder="123-456-7890" /></div>
+    <div class="form-group"><label>Campaign Prefix</label><input id="f-prefix" placeholder="Franklin" /></div>
+    <div class="form-group"><label>Impression Threshold</label><input id="f-threshold" type="number" value="0" /></div>
+    <p style="font-size:13px;color:var(--gray-500);margin-top:4px">You can connect Google Ads after creating the client.</p>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="addClient()">Create Client</button>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+async function addClient() {
+  try {
+    await api('/clients', { method: 'POST', body: JSON.stringify({
+      name: document.getElementById('f-name').value,
+      google_ads_customer_id: document.getElementById('f-cid').value,
+      merchant_id: document.getElementById('f-merchant').value || null,
+      mcc_account_id: document.getElementById('f-mcc').value || null,
+      campaign_prefix: document.getElementById('f-prefix').value,
+      impression_threshold: parseInt(document.getElementById('f-threshold').value) || 0,
+    })});
+    closeModal();
+    loadClients();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+// === Edit Client ===
+async function showEditClientModal(id) {
+  try {
+    const c = await api('/clients/' + id);
+    document.getElementById('modalContent').innerHTML = `
+      <h3>Edit Client</h3>
+      <div class="form-group"><label>Client Name</label><input id="fe-name" value="${c.name}" /></div>
+      <div class="form-group"><label>Google Ads Customer ID</label><input id="fe-cid" value="${c.google_ads_customer_id}" /></div>
+      <div class="form-group"><label>Merchant Center ID</label><input id="fe-merchant" value="${c.merchant_id || ''}" placeholder="123456789" /></div>
+      <div class="form-group"><label>MCC Account ID <span style="font-size:11px;color:var(--gray-500)">(if managed via MCC)</span></label><input id="fe-mcc" value="${c.mcc_account_id || ''}" placeholder="123-456-7890" /></div>
+      <div class="form-group"><label>Google Ads Connection</label>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${c.has_refresh_token
+            ? '<span class="badge" style="background:#2A9D8F;color:#fff">Connected</span><button class="btn btn-sm" style="background:#4285F4;color:#fff" onclick="closeModal();connectGoogleAds(\''+id+'\')">Reconnect</button>'
+            : '<span style="color:var(--gray-500)">Not connected</span><button class="btn btn-sm" style="background:#4285F4;color:#fff" onclick="closeModal();connectGoogleAds(\''+id+'\')">Connect Google Ads</button>'}
+        </div>
+      </div>
+      <div class="form-group"><label>Campaign Prefix</label><input id="fe-prefix" value="${c.campaign_prefix}" /></div>
+      <div class="form-group"><label>Impression Threshold</label><input id="fe-threshold" type="number" value="${c.impression_threshold}" /></div>
+      <div class="form-group"><label>Date Range</label>
+        <select id="fe-daterange">
+          <option value="TODAY" ${c.date_range==='TODAY'?'selected':''}>Today</option>
+          <option value="YESTERDAY" ${c.date_range==='YESTERDAY'?'selected':''}>Yesterday</option>
+          <option value="LAST_7_DAYS" ${c.date_range==='LAST_7_DAYS'?'selected':''}>Last 7 Days</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveClient('${id}')">Save Changes</button>
+      </div>`;
+    document.getElementById('modalOverlay').classList.add('active');
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function saveClient(id) {
+  try {
+    const updates = {
+      name: document.getElementById('fe-name').value,
+      google_ads_customer_id: document.getElementById('fe-cid').value,
+      merchant_id: document.getElementById('fe-merchant').value || null,
+      mcc_account_id: document.getElementById('fe-mcc').value || null,
+      campaign_prefix: document.getElementById('fe-prefix').value,
+      impression_threshold: parseInt(document.getElementById('fe-threshold').value) || 0,
+      date_range: document.getElementById('fe-daterange').value,
+    };
+    await api('/clients/' + id, { method: 'PATCH', body: JSON.stringify(updates) });
+    closeModal();
+    loadClients();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+// === Archive / Restore ===
+async function archiveClient(id) {
+  if (!confirm('Archive this client? It will no longer be processed by the engine.')) return;
+  await api('/clients/' + id + '/archive', { method: 'PATCH' });
+  loadClients();
+}
+
+async function unarchiveClient(id) {
+  await api('/clients/' + id, { method: 'PATCH', body: JSON.stringify({ is_active: true }) });
+  loadClients();
+}
+
+// === Connect Google Ads (OAuth) ===
+async function connectGoogleAds(clientId) {
+  try {
+    const result = await api('/oauth/google/start?clientId=' + clientId);
+    window.location.href = result.url;
+  } catch (err) { alert('Error starting Google Ads connection: ' + err.message); }
+}
+
+// === Account Picker (after OAuth) ===
+async function showAccountPickerModal(clientId) {
+  document.getElementById('modalContent').innerHTML = `
+    <h3>Select Google Ads Account</h3>
+    <p style="color:var(--gray-500);margin-bottom:12px">Google Ads connected! Select the account to manage:</p>
+    <div id="accountPickerList" style="text-align:center;padding:20px"><em>Loading accounts...</em></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+
+  try {
+    const accounts = await api('/oauth/google/accounts?clientId=' + clientId);
+    const list = document.getElementById('accountPickerList');
+    if (!accounts.length) {
+      list.innerHTML = `
+        <p style="margin-bottom:12px;color:var(--gray-500)">Could not auto-detect accounts. Enter the Google Ads Customer ID manually:</p>
+        <div class="form-group">
+          <input id="manualCid" placeholder="e.g. 123-456-7890" style="font-size:16px" />
+        </div>
+        <button class="btn btn-primary" onclick="saveManualCid('${clientId}')">Save Customer ID</button>`;
+      return;
+    }
+    list.innerHTML = accounts.map(a => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px solid var(--gray-200);border-radius:6px;margin-bottom:8px;cursor:pointer"
+           onclick="selectGoogleAdsAccount('${clientId}','${a.id}','${a.formatted_id}')"
+           onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background=''">
+        <div>
+          <strong>${a.name}</strong>${a.is_manager ? ' <span style="color:var(--gray-500);font-size:12px">(Manager)</span>' : ''}
+          <div style="font-size:13px;color:var(--gray-500)">${a.formatted_id}</div>
+        </div>
+        <button class="btn btn-sm btn-primary">Select</button>
+      </div>
+    `).join('');
+  } catch (err) {
+    document.getElementById('accountPickerList').innerHTML = '<p style="color:var(--red)">Error loading accounts: ' + err.message + '</p>';
+  }
+}
+
+async function selectGoogleAdsAccount(clientId, accountId, formattedId) {
+  try {
+    await api('/clients/' + clientId, { method: 'PATCH', body: JSON.stringify({ google_ads_customer_id: formattedId }) });
+    closeModal();
+    alert('Google Ads account ' + formattedId + ' selected!');
+    loadClients();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function saveManualCid(clientId) {
+  const raw = document.getElementById('manualCid').value.trim();
+  if (!raw) return alert('Please enter a Customer ID');
+  const formatted = raw.replace(/[^0-9]/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+  if (formatted.length !== 12) return alert('Customer ID should be 10 digits (e.g. 123-456-7890)');
+  await selectGoogleAdsAccount(clientId, formatted.replace(/-/g, ''), formatted);
+}
+
+// === Campaign Creation ===
+function showCreateCampaignsModal(vendorId, vendorName) {
+  document.getElementById('modalContent').innerHTML = `
+    <h3>Create Shopping Campaigns</h3>
+    <p>This will create 3 Shopping campaigns for <strong>${vendorName}</strong>:</p>
+    <ul style="margin:12px 0;font-size:13px;color:var(--gray-700);list-style:none;padding:0">
+      <li style="padding:4px 0">${_campaignPrefix} | ${vendorName} | Shopping | General &mdash; Priority HIGH, $0.05 CPC</li>
+      <li style="padding:4px 0">${_campaignPrefix} | ${vendorName} | Shopping | Brand &mdash; Priority MEDIUM, $0.10 CPC</li>
+      <li style="padding:4px 0">${_campaignPrefix} | ${vendorName} | Shopping | Product &mdash; Priority LOW, $0.25 CPC</li>
+    </ul>
+    <div class="form-group">
+      <label>Shared Daily Budget ($)</label>
+      <input id="f-budget" type="number" value="50" min="1" step="1" />
+    </div>
+    <p style="font-size:12px;color:var(--gray-500)">Campaigns will be created in PAUSED state. Enable them in Google Ads when ready.</p>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmCreateCampaigns('${vendorId}')">Create Campaigns</button>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+async function confirmCreateCampaigns(vendorId) {
+  const budget = parseInt(document.getElementById('f-budget').value) || 50;
+  const btn = document.querySelector('#modalContent .btn-primary');
+  btn.disabled = true;
+  btn.textContent = 'Creating...';
+  try {
+    await api('/clients/' + selectedClientId + '/vendors/' + vendorId + '/campaigns/create',
+      { method: 'POST', body: JSON.stringify({ budget }) });
+    closeModal();
+    alert('Campaigns created successfully! They are in PAUSED state in Google Ads.');
+    loadClientVendors();
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Create Campaigns';
+    alert('Error creating campaigns: ' + err.message + '\n\nIf this is a gRPC error, try:\n1. Click "Test Connection" to diagnose\n2. Set an MCC Account ID if using a manager account\n3. Use "CSV" to export and import via Google Ads Editor instead');
+  }
+}
+
+async function createAllCampaigns() {
+  if (!confirm('Create campaigns for all vendors that don\'t have them yet? Default budget: $50/day per vendor.')) return;
+  try {
+    const result = await api('/clients/' + selectedClientId + '/campaigns/create',
+      { method: 'POST', body: JSON.stringify({ budget: 50 }) });
+    const msg = result.errors
+      ? `Created: ${result.created}, Errors: ${result.errors}`
+      : `Created campaigns for ${result.created} vendor(s).`;
+    alert(msg);
+    loadClientVendors();
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+}
+
+// === Test Google Ads Connection ===
+async function testGoogleAdsConnection() {
+  if (!selectedClientId) return alert('Select a client first');
+  try {
+    const result = await api('/clients/' + selectedClientId + '/campaigns/test', { method: 'POST' });
+    let msg = `Connection Test Results:\n\n`;
+    msg += `Customer ID: ${result.customerId || 'N/A'}\n`;
+    msg += `MCC Account: ${result.mccAccountId || 'None'}\n`;
+    msg += `Read Access: ${result.reads ? 'YES' : 'NO'}${result.readError ? ' (' + result.readError + ')' : ''}\n`;
+    msg += `Write Access: ${result.writes ? 'YES' : 'NO'}${result.writeError ? ' (' + result.writeError + ')' : ''}\n`;
+    if (result.sampleCampaigns?.length) {
+      msg += `\nSample Campaigns:\n` + result.sampleCampaigns.map(c => `  - ${c.name} (${c.id})`).join('\n');
+    }
+    if (result.writeErrorDetails) {
+      msg += `\nWrite Error Details: ${JSON.stringify(result.writeErrorDetails)}`;
+    }
+    alert(msg);
+  } catch (err) {
+    alert('Test failed: ' + err.message);
+  }
+}
+
+// === CSV Download ===
+async function downloadVendorCSV(vendorId) {
+  if (!selectedClientId) return;
+  try {
+    const budget = prompt('Daily budget per campaign ($)?', '50');
+    if (!budget) return;
+    const response = await fetch(API_BASE + '/clients/' + selectedClientId + '/vendors/' + vendorId + '/campaigns/csv?budget=' + budget, {
+      headers: { 'X-API-Key': apiKey }
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error || 'Download failed');
+    }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = response.headers.get('Content-Disposition')?.match(/filename="(.+)"/)?.[1] || 'campaigns.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('CSV download error: ' + err.message);
+  }
+}
+
+async function downloadAllCSV() {
+  if (!selectedClientId) return;
+  try {
+    const budget = prompt('Daily budget per campaign ($)?', '50');
+    if (!budget) return;
+    const response = await fetch(API_BASE + '/clients/' + selectedClientId + '/campaigns/csv?budget=' + budget, {
+      headers: { 'X-API-Key': apiKey }
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error || 'Download failed');
+    }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = response.headers.get('Content-Disposition')?.match(/filename="(.+)"/)?.[1] || 'all_campaigns.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('CSV download error: ' + err.message);
+  }
+}
+
+// === Link Campaign IDs ===
+function showLinkCampaignsModal(vendorId, vendorName) {
+  document.getElementById('modalContent').innerHTML = `
+    <h3>Link Campaign IDs</h3>
+    <p style="margin-bottom:12px">Enter the Google Ads campaign IDs for <strong>${vendorName}</strong>. You can find these in Google Ads or Google Ads Editor after importing the CSV.</p>
+    <div class="form-group">
+      <label>${_campaignPrefix} | ${vendorName} | Shopping | General</label>
+      <input id="fl-general" placeholder="Campaign ID (e.g. 12345678901)" />
+    </div>
+    <div class="form-group">
+      <label>${_campaignPrefix} | ${vendorName} | Shopping | Brand</label>
+      <input id="fl-brand" placeholder="Campaign ID (e.g. 12345678902)" />
+    </div>
+    <div class="form-group">
+      <label>${_campaignPrefix} | ${vendorName} | Shopping | Product</label>
+      <input id="fl-product" placeholder="Campaign ID (e.g. 12345678903)" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmLinkCampaigns('${vendorId}')">Link Campaigns</button>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+async function confirmLinkCampaigns(vendorId) {
+  const general = document.getElementById('fl-general').value.trim();
+  const brand = document.getElementById('fl-brand').value.trim();
+  const product = document.getElementById('fl-product').value.trim();
+  if (!general || !brand || !product) return alert('All three campaign IDs are required');
+  const btn = document.querySelector('#modalContent .btn-primary');
+  btn.disabled = true;
+  btn.textContent = 'Linking...';
+  try {
+    await api('/clients/' + selectedClientId + '/vendors/' + vendorId + '/campaigns/link', {
+      method: 'POST',
+      body: JSON.stringify({ general_campaign_id: general, brand_campaign_id: brand, product_campaign_id: product })
+    });
+    closeModal();
+    alert('Campaign IDs linked successfully!');
+    loadClientVendors();
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Link Campaigns';
+    alert('Error linking campaigns: ' + err.message);
+  }
+}
+
+// === Delete Client (permanent, requires name confirmation) ===
+function showDeleteClientModal(id, name) {
+  document.getElementById('modalContent').innerHTML = `
+    <h3 style="color:var(--red)">Permanently Delete Client</h3>
+    <p style="margin-bottom:12px">This will permanently delete <strong>${name}</strong> and all associated data (campaign configs, run logs, negative keyword history, vendor assignments).</p>
+    <p style="margin-bottom:12px;font-weight:600">Type the client name to confirm:</p>
+    <div class="form-group"><input id="fd-confirm" placeholder="${name}" autocomplete="off" /></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="deleteClient('${id}', '${name.replace(/'/g, "\\'")}')">Delete Forever</button>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+async function deleteClient(id, name) {
+  const typed = document.getElementById('fd-confirm').value;
+  if (typed !== name) {
+    alert('Client name does not match. Please type the exact name.');
+    return;
+  }
+  try {
+    await api('/clients/' + id, { method: 'DELETE', body: JSON.stringify({ confirm_name: typed }) });
+    closeModal();
+    loadClients();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function triggerClientRun(id) {
+  if (!confirm('Run engine for this client now?')) return;
+  try {
+    const res = await api('/engine/run/' + id, { method: 'POST' });
+    alert(res.success ? `Success! Processed ${res.queriesProcessed} queries, added ${res.negativesAdded} negatives.` : 'Error: ' + res.error);
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function triggerRun() {
+  if (!confirm('Run engine for ALL active clients now?')) return;
+  try {
+    const res = await api('/engine/run?async=true', { method: 'POST' });
+    alert('Engine run triggered for all active clients.');
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+// ==================== MASTER KEYWORDS ====================
+let allCategories = [];
+
+async function loadMasterKeywordsView() {
+  try {
+    allMasterKeywords = await api('/keywords/master');
+    const cats = await api('/keywords/master/categories');
+    allCategories = cats;
+    const catSel = document.getElementById('masterCategoryFilter');
+    catSel.innerHTML = '<option value="">All Categories</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    renderMasterKeywords(allMasterKeywords);
+  } catch (err) { console.error(err); }
+}
+
+function renderMasterKeywords(keywords) {
+  const tbody = document.querySelector('#masterTable tbody');
+  tbody.innerHTML = keywords.map(k => `<tr>
+    <td>${k.keyword}</td>
+    <td>${k.category || '-'}</td>
+    <td><button class="btn btn-sm btn-danger" onclick="deleteMasterKeyword('${k.id}')">x</button></td>
+  </tr>`).join('');
+}
+
+function filterMasterKeywords() {
+  const q = document.getElementById('masterSearch').value.toLowerCase();
+  const cat = document.getElementById('masterCategoryFilter').value;
+  renderMasterKeywords(allMasterKeywords.filter(k => {
+    if (q && !k.keyword.includes(q) && !(k.category || '').toLowerCase().includes(q)) return false;
+    if (cat && k.category !== cat) return false;
+    return true;
+  }));
+}
+
+async function deleteMasterKeyword(id) {
+  if (!confirm('Delete this master keyword?')) return;
+  await api('/keywords/master/' + id, { method: 'DELETE' });
+  loadMasterKeywordsView();
+}
+
+// ==================== VENDORS ====================
+let allVendors = [];
+let filteredVendors = [];
+let vendorPage = 0;
+const VENDORS_PER_PAGE = 20;
+
+async function loadVendorsView() {
+  try {
+    allVendors = await api('/vendors');
+    document.getElementById('vendorCount').textContent = `(${allVendors.length})`;
+    vendorPage = 0;
+    filterVendorsList();
+  } catch (err) { console.error(err); }
+}
+
+function renderVendorsListTable() {
+  const start = vendorPage * VENDORS_PER_PAGE;
+  const page = filteredVendors.slice(start, start + VENDORS_PER_PAGE);
+  const tbody = document.querySelector('#vendorsListTable tbody');
+  tbody.innerHTML = page.map(v => {
+    const archiveBtn = v.is_active === false
+      ? `<button class="btn btn-sm" style="background:var(--green);color:#fff" onclick="unarchiveVendor('${v.id}')">Restore</button>`
+      : `<button class="btn btn-sm" style="background:var(--orange);color:#333" onclick="archiveVendor('${v.id}')">Archive</button>`;
+    const nameStyle = v.is_active === false ? 'opacity:0.5' : '';
+    const canEdit = hasRole('account_manager', 'admin');
+    return `<tr>
+      <td style="${nameStyle}"><strong>${v.name}</strong>${v.is_active === false ? ' <span style="font-size:11px;color:var(--gray-500)">(archived)</span>' : ''}</td>
+      <td>${v.brand_keyword_count || 0}</td>
+      <td>${v.product_keyword_count || 0}</td>
+      <td style="display:flex;gap:6px;flex-wrap:nowrap">
+        ${canEdit ? `<button class="btn btn-sm" onclick="showEditVendorModal('${v.id}',\`${v.name.replace(/`/g,'')}\`)">Edit</button>
+        ${archiveBtn}
+        <button class="btn btn-sm btn-danger" onclick="deleteVendor('${v.id}')">Delete</button>` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+
+  const totalPages = Math.ceil(filteredVendors.length / VENDORS_PER_PAGE);
+  const pagination = document.getElementById('vendorPagination');
+  pagination.style.display = filteredVendors.length > VENDORS_PER_PAGE ? 'flex' : 'none';
+  document.getElementById('vendorPageInfo').textContent = `Page ${vendorPage + 1} of ${totalPages} (${filteredVendors.length} vendors)`;
+  document.getElementById('vendorPrevBtn').disabled = vendorPage === 0;
+  document.getElementById('vendorNextBtn').disabled = vendorPage >= totalPages - 1;
+}
+
+function changeVendorPage(dir) {
+  vendorPage += dir;
+  renderVendorsListTable();
+}
+
+function filterVendorsList() {
+  const q = document.getElementById('vendorSearch').value.toLowerCase();
+  const status = document.getElementById('vendorStatusFilter').value;
+  filteredVendors = allVendors.filter(v => {
+    if (status === 'active' && v.is_active === false) return false;
+    if (status === 'archived' && v.is_active !== false) return false;
+    if (q && !v.name.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  vendorPage = 0;
+  renderVendorsListTable();
+}
+
+function showAddVendorModal() {
+  document.getElementById('modalContent').innerHTML = `
+    <h3>Add Vendor</h3>
+    <div class="form-group"><label>Vendor Name</label><input id="f-vendor-name" placeholder="e.g. Acme Brand" /></div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="createVendor()">Add</button></div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+async function createVendor() {
+  const name = document.getElementById('f-vendor-name').value.trim();
+  if (!name) return alert('Vendor name is required');
+  try {
+    await api('/vendors', { method: 'POST', body: JSON.stringify({ name }) });
+    closeModal();
+    loadVendorsView();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function deleteVendor(id) {
+  if (!confirm('Delete this vendor? Only works if it has no keywords.')) return;
+  try {
+    await api('/vendors/' + id, { method: 'DELETE' });
+    loadVendorsView();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+function showEditVendorModal(id, name) {
+  document.getElementById('modalContent').innerHTML = `
+    <h3>Edit Vendor</h3>
+    <div class="form-group"><label>Vendor Name</label><input id="f-edit-vendor-name" value="${name}" /></div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveVendor('${id}')">Save</button></div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+async function saveVendor(id) {
+  const name = document.getElementById('f-edit-vendor-name').value.trim();
+  if (!name) return alert('Vendor name is required');
+  try {
+    await api('/vendors/' + id, { method: 'PATCH', body: JSON.stringify({ name }) });
+    closeModal();
+    loadVendorsView();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function archiveVendor(id) {
+  if (!confirm('Archive this vendor?')) return;
+  try {
+    await api('/vendors/' + id + '/archive', { method: 'PATCH' });
+    loadVendorsView();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function unarchiveVendor(id) {
+  try {
+    await api('/vendors/' + id, { method: 'PATCH', body: JSON.stringify({ is_active: true }) });
+    loadVendorsView();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+// ==================== VENDOR KEYWORDS ====================
+let vkVendorsList = [];
+
+async function loadVendorKeywordsView() {
+  try {
+    vkVendorsList = await api('/vendors');
+    const sel = document.getElementById('vkVendorFilter');
+    sel.innerHTML = '<option value="">All Vendors</option>' + vkVendorsList.map(v => `<option value="${v.id}">${v.name}</option>`).join('');
+    loadVendorKeywords();
+  } catch (err) { console.error(err); }
+}
+
+let _selectedKeywordIds = new Set();
+
+function renderKeywordRow(k, vendorName) {
+  const isArchived = k.is_active === false;
+  const style = isArchived ? 'opacity:0.5' : '';
+  const checked = _selectedKeywordIds.has(k.id) ? 'checked' : '';
+  const archiveBtn = isArchived
+    ? `<button class="btn btn-sm" style="background:var(--green);color:#fff" onclick="restoreVendorKeyword('${k.id}')">Restore</button>`
+    : `<button class="btn btn-sm" style="background:var(--orange);color:#333" onclick="archiveVendorKeyword('${k.id}')">Archive</button>`;
+  return `<tr>
+    <td><input type="checkbox" ${checked} onchange="toggleKeywordSelect('${k.id}', this.checked)" /></td>
+    <td style="${style}">${k.keyword}${isArchived ? ' <span style="font-size:11px;color:var(--gray-500)">(archived)</span>' : ''}</td>
+    <td>${vendorName}</td>
+    <td><span class="badge ${k.campaign_type === 'brand' ? 'active' : 'running'}">${k.campaign_type}</span></td>
+    <td style="display:flex;gap:6px;flex-wrap:nowrap">${archiveBtn}<button class="btn btn-sm btn-danger" onclick="deleteVendorKeyword('${k.id}')">x</button></td>
+  </tr>`;
+}
+
+function toggleKeywordSelect(id, checked) {
+  if (checked) _selectedKeywordIds.add(id); else _selectedKeywordIds.delete(id);
+  updateBulkBar();
+}
+
+function toggleAllKeywords(checked) {
+  document.querySelectorAll('#vendorKeywordsTable tbody input[type=checkbox]').forEach(cb => {
+    cb.checked = checked;
+    const id = cb.getAttribute('onchange').match(/'([^']+)'/)?.[1];
+    if (id) { if (checked) _selectedKeywordIds.add(id); else _selectedKeywordIds.delete(id); }
+  });
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('vkBulkBar');
+  const count = _selectedKeywordIds.size;
+  bar.style.display = count > 0 ? 'flex' : 'none';
+  document.getElementById('vkSelectedCount').textContent = `${count} selected`;
+}
+
+function clearKeywordSelection() {
+  _selectedKeywordIds.clear();
+  document.querySelectorAll('#vendorKeywordsTable tbody input[type=checkbox]').forEach(cb => cb.checked = false);
+  document.getElementById('vkSelectAll').checked = false;
+  updateBulkBar();
+}
+
+async function bulkKeywordAction(action) {
+  const ids = [..._selectedKeywordIds];
+  if (ids.length === 0) return;
+  if (action === 'delete' && !confirm(`Permanently delete ${ids.length} keyword(s)?`)) return;
+  if (action === 'archive' && !confirm(`Archive ${ids.length} keyword(s)?`)) return;
+
+  let failed = 0;
+  for (const id of ids) {
+    try {
+      if (action === 'archive') await api('/vendors/keywords/' + id + '/archive', { method: 'PATCH' });
+      else if (action === 'restore') await api('/vendors/keywords/' + id + '/restore', { method: 'PATCH' });
+      else if (action === 'delete') await api('/vendors/keywords/' + id, { method: 'DELETE' });
+    } catch (e) { failed++; }
+  }
+  _selectedKeywordIds.clear();
+  document.getElementById('vkSelectAll').checked = false;
+  updateBulkBar();
+  loadVendorKeywords();
+  if (failed > 0) alert(`${failed} keyword(s) failed to ${action}`);
+}
+
+function filterKeywordsByStatus(keywords) {
+  const status = document.getElementById('vkStatusFilter').value;
+  if (status === 'active') return keywords.filter(k => k.is_active !== false);
+  if (status === 'archived') return keywords.filter(k => k.is_active === false);
+  return keywords;
+}
+
+async function loadVendorKeywords() {
+  _selectedKeywordIds.clear();
+  if (document.getElementById('vkSelectAll')) document.getElementById('vkSelectAll').checked = false;
+  updateBulkBar();
+  try {
+    const vendorId = document.getElementById('vkVendorFilter').value;
+    const campType = document.getElementById('vkTypeFilter').value;
+    const search = document.getElementById('vkSearch').value.trim();
+
+    if (vendorId) {
+      const params = new URLSearchParams();
+      if (campType) params.set('campaign_type', campType);
+      if (search) params.set('search', search);
+      params.set('limit', '500');
+
+      const result = await api('/vendors/' + vendorId + '/keywords?' + params.toString());
+      const vendorName = vkVendorsList.find(v => v.id === vendorId)?.name || '-';
+      const filtered = filterKeywordsByStatus(result.data);
+      document.getElementById('vkInfo').textContent = `Showing ${filtered.length} of ${result.total} keywords`;
+      document.querySelector('#vendorKeywordsTable tbody').innerHTML = filtered.map(k => renderKeywordRow(k, vendorName)).join('');
+    } else {
+      let allKw = [];
+      for (const v of vkVendorsList) {
+        const params = new URLSearchParams();
+        if (campType) params.set('campaign_type', campType);
+        if (search) params.set('search', search);
+        params.set('limit', '500');
+        const result = await api('/vendors/' + v.id + '/keywords?' + params.toString());
+        allKw = allKw.concat(result.data.map(k => ({ ...k, vendorName: v.name })));
+      }
+      allKw.sort((a, b) => a.keyword.localeCompare(b.keyword));
+      const filtered = filterKeywordsByStatus(allKw);
+      document.getElementById('vkInfo').textContent = `Showing ${filtered.length} keywords`;
+      document.querySelector('#vendorKeywordsTable tbody').innerHTML = filtered.map(k => renderKeywordRow(k, k.vendorName)).join('');
+    }
+  } catch (err) { console.error(err); }
+}
+
+async function archiveVendorKeyword(id) {
+  try {
+    await api('/vendors/keywords/' + id + '/archive', { method: 'PATCH' });
+    loadVendorKeywords();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function restoreVendorKeyword(id) {
+  try {
+    await api('/vendors/keywords/' + id + '/restore', { method: 'PATCH' });
+    loadVendorKeywords();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function deleteVendorKeyword(id) {
+  if (!confirm('Delete this vendor keyword?')) return;
+  await api('/vendors/keywords/' + id, { method: 'DELETE' });
+  loadVendorKeywords();
+}
+
+function showAddVendorKeywordsModal() {
+  const vendorOpts = vkVendorsList.map(v => `<option value="${v.id}">${v.name}</option>`).join('');
+  document.getElementById('modalContent').innerHTML = `
+    <h3>Add Vendor Keywords</h3>
+    <div class="form-group"><label>Vendor *</label><select id="f-vendor-id"><option value="">Select vendor...</option>${vendorOpts}</select></div>
+    <div class="form-group"><label>Campaign Type *</label><select id="f-campaign-type"><option value="">Select type...</option><option value="brand">Brand</option><option value="product">Product</option></select></div>
+    <div class="form-group"><label>Keywords (one per line)</label><textarea id="f-kw" rows="6" placeholder="acme brand&#10;acme pro series"></textarea></div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="addVendorKeywords()">Add</button></div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+async function addVendorKeywords() {
+  const vendor_id = document.getElementById('f-vendor-id').value;
+  const campaign_type = document.getElementById('f-campaign-type').value;
+  if (!vendor_id) return alert('Vendor is required');
+  if (!campaign_type) return alert('Campaign Type is required');
+  const lines = document.getElementById('f-kw').value.split('\n').filter(l => l.trim());
+  if (lines.length === 0) return alert('Enter at least one keyword');
+  try {
+    await api('/vendors/' + vendor_id + '/keywords', { method: 'POST', body: JSON.stringify({ keywords: lines.map(keyword => ({ keyword, campaign_type })) }) });
+    closeModal();
+    loadVendorKeywords();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+// ==================== CSV IMPORT ====================
+let _csvRows = [];
+
+function showImportCSVModal() {
+  _csvRows = [];
+  document.getElementById('modalContent').innerHTML = `
+    <h3>Import Vendor Keywords from CSV</h3>
+    <p style="font-size:12px;color:var(--gray-500);margin-bottom:12px">CSV format: <strong>vendor, campaign_type, keyword</strong> (one per line). Header row is auto-detected and skipped.</p>
+    <div class="form-group"><label>Select CSV File</label><input type="file" id="f-csv" accept=".csv,.txt" onchange="previewCSV()" /></div>
+    <div id="csv-preview" style="display:none">
+      <div id="csv-info" style="font-size:12px;color:var(--gray-500);margin-bottom:8px"></div>
+      <div style="max-height:200px;overflow-y:auto;border:1px solid var(--gray-300);border-radius:4px">
+        <table id="csv-preview-table" style="font-size:12px"><thead><tr><th>Vendor</th><th>Type</th><th>Keyword</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div id="csv-result" style="display:none;margin-top:12px;padding:12px;border-radius:4px"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" id="csv-import-btn" onclick="importCSV()" disabled>Import</button>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function previewCSV() {
+  const file = document.getElementById('f-csv').files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const lines = e.target.result.split(/\r?\n/).filter(l => l.trim());
+    _csvRows = [];
+    let startIdx = 0;
+    // Auto-detect header row
+    if (lines.length > 0) {
+      const first = lines[0].toLowerCase();
+      if (first.includes('vendor') || first.includes('campaign') || first.includes('keyword')) {
+        startIdx = 1;
+      }
+    }
+    for (let i = startIdx; i < lines.length; i++) {
+      const parts = lines[i].split(',').map(s => s.trim());
+      if (parts.length >= 3 && parts[0] && parts[1] && parts[2]) {
+        _csvRows.push({ vendor: parts[0], campaign_type: parts[1], keyword: parts[2] });
+      }
+    }
+    // Show preview
+    document.getElementById('csv-preview').style.display = '';
+    document.getElementById('csv-info').textContent = `${_csvRows.length} valid rows found`;
+    const preview = _csvRows.slice(0, 5);
+    document.querySelector('#csv-preview-table tbody').innerHTML = preview.map(r =>
+      `<tr><td>${r.vendor}</td><td><span class="badge ${r.campaign_type==='brand'?'active':'running'}">${r.campaign_type}</span></td><td>${r.keyword}</td></tr>`
+    ).join('') + (_csvRows.length > 5 ? `<tr><td colspan="3" style="color:var(--gray-500);text-align:center">... and ${_csvRows.length - 5} more rows</td></tr>` : '');
+    document.getElementById('csv-import-btn').disabled = _csvRows.length === 0;
+    document.getElementById('csv-result').style.display = 'none';
+  };
+  reader.readAsText(file);
+}
+
+async function importCSV() {
+  if (_csvRows.length === 0) return;
+  const btn = document.getElementById('csv-import-btn');
+  btn.disabled = true;
+  btn.textContent = 'Importing...';
+  try {
+    const result = await api('/vendors/keywords/import', { method: 'POST', body: JSON.stringify({ rows: _csvRows }) });
+    const resultDiv = document.getElementById('csv-result');
+    resultDiv.style.display = '';
+    resultDiv.style.background = '#E6F4EA';
+    resultDiv.style.color = 'var(--green)';
+    let msg = `Imported ${result.imported} keywords from ${result.total_rows} rows.`;
+    if (result.vendors_created > 0) msg += ` Created ${result.vendors_created} new vendor(s).`;
+    if (result.errors && result.errors.length > 0) {
+      resultDiv.style.background = '#FEF7E0';
+      resultDiv.style.color = 'var(--gray-900)';
+      msg += `<br><strong>${result.errors.length} issue(s):</strong><br>` + result.errors.slice(0, 5).map(e => `&bull; ${e}`).join('<br>');
+    }
+    resultDiv.innerHTML = msg;
+    btn.textContent = 'Done';
+    loadVendorKeywords();
+  } catch (err) {
+    const resultDiv = document.getElementById('csv-result');
+    resultDiv.style.display = '';
+    resultDiv.style.background = '#FCE8E6';
+    resultDiv.style.color = 'var(--red)';
+    resultDiv.textContent = 'Error: ' + err.message;
+    btn.textContent = 'Import';
+    btn.disabled = false;
+  }
+}
+
+// ==================== CLIENT VENDOR ASSIGNMENT ====================
+let selectedClientId = null;
+
+async function manageClientVendors(clientId) {
+  selectedClientId = clientId;
+  const client = (await api('/clients')).find(c => c.id === clientId);
+  document.getElementById('clientVendorsName').textContent = client?.name || '';
+  // Populate optimizations panel
+  window.currentClient = client;
+  const auditResult = document.getElementById('clientUrlAuditResult');
+  if (auditResult) auditResult.innerHTML = '';
+  const optStatus = document.getElementById('clientOptStatus');
+  if (optStatus) optStatus.innerHTML = '';
+  const blockCb = document.getElementById('clientBlockAppsFlag');
+  if (blockCb) blockCb.checked = client?.block_mobile_apps !== false;
+  const mobileStatus = document.getElementById('clientMobileBlockStatus');
+  if (mobileStatus) mobileStatus.textContent = client?.mobile_apps_blocked_at
+    ? 'Last applied: ' + new Date(client.mobile_apps_blocked_at).toLocaleString()
+    : 'Not yet applied.';
+  const masterStatus = document.getElementById('clientMasterSetStatus');
+  if (masterStatus) masterStatus.textContent = client?.master_shared_set_resource_name
+    ? `Linked to ${client.master_shared_set_resource_name}${client.master_negatives_synced_at ? ' — last synced ' + new Date(client.master_negatives_synced_at).toLocaleString() : ''}`
+    : 'No SharedSet yet — click Sync to create one.';
+  // Switch to client detail view
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-client-detail').classList.add('active');
+  // Remove active state from nav buttons (detail is a sub-view)
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  loadClientVendors();
+}
+
+// ==================== CAMPAIGN OPTIMIZATIONS ====================
+async function applyClientObservationAudiences() {
+  if (!selectedClientId) return;
+  const status = document.getElementById('clientOptStatus');
+  status.innerHTML = '<span style="color:var(--gray-500)">Attaching observation audiences...</span>';
+  try {
+    const r = await api('/clients/' + selectedClientId + '/apply-observation-audiences', { method: 'POST' });
+    if (r.errors && r.errors > 0) {
+      status.innerHTML = `<span style="color:var(--red);font-weight:600">${r.added} added, ${r.errors} failed across ${r.campaignsTargeted} campaigns.</span><div style="font-family:monospace;font-size:12px;color:var(--gray-700);margin-top:4px;white-space:pre-wrap">${escapeHtml(r.errorDetail || 'No detail returned.')}</div>`;
+    } else {
+      status.innerHTML = `<span style="color:var(--green);font-weight:600">${r.added} audience observations added across ${r.campaignsTargeted} campaigns (${r.skipped} already present).</span>`;
+    }
+  } catch (err) {
+    status.innerHTML = '<span style="color:var(--red)">Error: ' + err.message + '</span>';
+  }
+}
+
+async function runClientUrlAudit() {
+  if (!selectedClientId) return;
+  const resultEl = document.getElementById('clientUrlAuditResult');
+  resultEl.innerHTML = '<span style="color:var(--gray-500)">Scanning campaigns...</span>';
+  try {
+    const r = await api('/clients/' + selectedClientId + '/url-audit');
+    if (r.count === 0) {
+      resultEl.innerHTML = '<span style="color:var(--green);font-weight:600">Clean — no campaigns have tracking templates or URL suffixes set.</span>';
+      return;
+    }
+    const rows = r.issues.map(i => `
+      <tr>
+        <td>${escapeHtml(i.campaignName)}</td>
+        <td style="font-family:monospace;font-size:12px">${escapeHtml(i.trackingUrlTemplate) || '—'}</td>
+        <td style="font-family:monospace;font-size:12px">${escapeHtml(i.finalUrlSuffix) || '—'}</td>
+        <td style="font-size:12px;color:var(--gray-500)">${i.status}</td>
+      </tr>`).join('');
+    resultEl.innerHTML = `
+      <div style="color:var(--orange);font-weight:600;margin-bottom:6px">${r.count} campaign(s) have URL tracking set. Review and clear in Google Ads if stale.</div>
+      <table style="width:100%;border-collapse:collapse"><thead>
+        <tr style="background:var(--gray-100)"><th style="text-align:left;padding:6px">Campaign</th><th style="text-align:left;padding:6px">Tracking URL Template</th><th style="text-align:left;padding:6px">Final URL Suffix</th><th style="text-align:left;padding:6px">Status</th></tr>
+      </thead><tbody>${rows}</tbody></table>`;
+  } catch (err) {
+    resultEl.innerHTML = '<span style="color:var(--red)">Error: ' + err.message + '</span>';
+  }
+}
+
+async function syncClientMasterNegatives() {
+  if (!selectedClientId) return;
+  const status = document.getElementById('clientOptStatus');
+  status.innerHTML = '<span style="color:var(--gray-500)">Syncing master negatives shared set...</span>';
+  try {
+    const r = await api('/clients/' + selectedClientId + '/sync-master-negatives', { method: 'POST' });
+    status.innerHTML = `<span style="color:var(--green);font-weight:600">SharedSet ${r.created ? 'created' : 'reused'}. Criteria: +${r.criteria.added}, -${r.criteria.removed} (total ${r.criteria.total}). Campaigns attached: ${r.campaignsAttached} new, ${r.campaignsAlreadyAttached} already linked.</span>`;
+    document.getElementById('clientMasterSetStatus').textContent = `Linked to ${r.sharedSetResourceName} — last synced ${new Date().toLocaleString()}`;
+  } catch (err) {
+    status.innerHTML = '<span style="color:var(--red)">Error: ' + err.message + '</span>';
+  }
+}
+
+async function blockClientMobileApps() {
+  if (!selectedClientId) return;
+  const status = document.getElementById('clientOptStatus');
+  status.innerHTML = '<span style="color:var(--gray-500)">Applying mobile app block...</span>';
+  try {
+    const r = await api('/clients/' + selectedClientId + '/block-mobile-apps', { method: 'POST' });
+    if (r.error) {
+      status.innerHTML = `<span style="color:var(--red);font-weight:600">Mobile app block (category ${r.categoryId}) failed.</span><div style="font-family:monospace;font-size:12px;color:var(--gray-700);margin-top:4px;white-space:pre-wrap">${escapeHtml(r.error)}</div>`;
+    } else {
+      const verb = r.added ? 'added' : r.existed ? 'already in place' : 'no-op';
+      status.innerHTML = `<span style="color:var(--green);font-weight:600">Mobile app block (category ${r.categoryId}) ${verb}.</span>`;
+      document.getElementById('clientMobileBlockStatus').textContent = 'Last applied: ' + new Date().toLocaleString();
+      document.getElementById('clientBlockAppsFlag').checked = true;
+    }
+  } catch (err) {
+    status.innerHTML = '<span style="color:var(--red)">Error: ' + err.message + '</span>';
+  }
+}
+
+async function toggleClientBlockApps() {
+  if (!selectedClientId) return;
+  const checked = document.getElementById('clientBlockAppsFlag').checked;
+  try {
+    await api('/clients/' + selectedClientId, {
+      method: 'PATCH',
+      body: JSON.stringify({ block_mobile_apps: checked }),
+    });
+  } catch (err) {
+    alert('Failed to save: ' + err.message);
+  }
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function backToClients() {
+  selectedClientId = null;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-clients').classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim() === 'Clients');
+  });
+  loadClients();
+}
+
+function renderVendorSyncCell(cv) {
+  if (!cv.campaigns_created) {
+    return '<span style="color:var(--gray-500);font-size:12px">—</span>';
+  }
+  const ts = cv.master_negatives_synced_at;
+  if (!ts) {
+    return '<span title="This vendor\'s campaigns have never been synced with master negatives" style="color:var(--red);font-weight:600">● Never</span>';
+  }
+  const date = new Date(ts);
+  const ageH = (Date.now() - date.getTime()) / 3_600_000;
+  let color, label;
+  if (ageH < 1) { color = 'var(--green)'; label = 'Recent'; }
+  else if (ageH < 24) { color = 'var(--orange)'; label = `${Math.round(ageH)}h ago`; }
+  else { color = 'var(--red)'; label = `${Math.round(ageH / 24)}d ago`; }
+  return `<span title="Last synced: ${date.toLocaleString()}" style="color:${color};font-weight:600;white-space:nowrap">● ${label}</span>`;
+}
+
+async function syncVendorMasterNegatives(vendorId, vendorName) {
+  if (!selectedClientId) return;
+  if (!confirm(`Sync negatives for ${vendorName}?\n\n• Master Negatives (client-wide SharedSet)\n• Brand / Product keywords — direct campaign-level negatives`)) return;
+  try {
+    const r = await api(`/clients/${selectedClientId}/vendors/${vendorId}/sync-master-negatives`, { method: 'POST' });
+    alert(`${vendorName} synced.\n\n${formatWaterfallResult(r)}`);
+    loadClientVendors();
+  } catch (err) {
+    alert('Sync failed: ' + err.message);
+  }
+}
+
+async function loadClientVendors() {
+  if (!selectedClientId) return;
+  try {
+    const data = await api('/clients/' + selectedClientId + '/vendors');
+    const tbody = document.querySelector('#clientVendorsTable tbody');
+    tbody.innerHTML = data.length === 0 ? '<tr><td colspan="6" style="color:var(--gray-500);text-align:center">No vendors assigned</td></tr>' :
+      data.map(cv => `<tr>
+        <td><strong>${cv.vendors?.name || '-'}</strong></td>
+        <td>-</td>
+        <td>-</td>
+        <td>${cv.campaigns_created
+          ? '<span class="badge" style="background:#2A9D8F;color:#fff;font-size:11px">Created</span>'
+          : (hasRole('account_manager','admin') ? `<div style="display:flex;gap:4px;flex-wrap:wrap">
+              <button class="btn btn-sm" style="background:#2A9D8F;color:#fff;font-size:11px" onclick="showCreateCampaignsModal('${cv.vendors?.id}','${(cv.vendors?.name||'').replace(/'/g,"\\'")}')">API</button>
+              <button class="btn btn-sm" style="background:#4285F4;color:#fff;font-size:11px" onclick="downloadVendorCSV('${cv.vendors?.id}')">CSV</button>
+              <button class="btn btn-sm" style="background:var(--orange);color:var(--gray-900);font-size:11px" onclick="showLinkCampaignsModal('${cv.vendors?.id}','${(cv.vendors?.name||'').replace(/'/g,"\\'")}')">Link</button>
+            </div>` : '<span style="color:var(--gray-500);font-size:12px">Not created</span>')}</td>
+        <td>${renderVendorSyncCell(cv)}${hasRole('account_manager','admin') && cv.campaigns_created
+          ? ` <button class="btn btn-sm" style="background:#8E7CC3;color:#fff;font-size:11px;margin-left:6px" onclick="syncVendorMasterNegatives('${cv.vendors?.id}','${(cv.vendors?.name||'').replace(/'/g,"\\'")}')">Sync</button>`
+          : ''}</td>
+        <td>${hasRole('agency','account_manager','admin') ? `<button class="btn btn-sm btn-danger" onclick="unassignVendor('${cv.vendors?.id}')">Unassign</button>` : ''}</td>
+      </tr>`).join('');
+  } catch (err) { console.error(err); }
+}
+
+let _availableVendors = [];
+let _selectedVendorIds = new Set();
+
+async function showAssignVendorModal() {
+  try {
+    const allV = await api('/vendors');
+    const assigned = await api('/clients/' + selectedClientId + '/vendors');
+    const assignedIds = assigned.map(a => a.vendor_id);
+    _availableVendors = allV.filter(v => !assignedIds.includes(v.id));
+    _selectedVendorIds = new Set();
+    document.getElementById('modalContent').innerHTML = `
+      <h3>Assign Vendors</h3>
+      <div class="form-group"><input id="f-vendor-search" placeholder="Search vendors..." oninput="filterAssignVendors()" /></div>
+      <div id="f-vendor-list" style="max-height:280px;overflow-y:auto;border:1px solid var(--gray-300);border-radius:4px"></div>
+      <div id="f-vendor-count" style="font-size:12px;color:var(--gray-500);margin-top:6px">0 selected</div>
+      <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="assignVendors()">Assign Selected</button></div>`;
+    filterAssignVendors();
+    document.getElementById('modalOverlay').classList.add('active');
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+function filterAssignVendors() {
+  const q = (document.getElementById('f-vendor-search').value || '').toLowerCase();
+  const filtered = _availableVendors.filter(v => v.name.toLowerCase().includes(q));
+  document.getElementById('f-vendor-list').innerHTML = filtered.length === 0
+    ? '<div style="padding:12px;color:var(--gray-500);text-align:center">No vendors found</div>'
+    : filtered.map(v => `<label style="display:flex;align-items:center;padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--gray-100);gap:8px;${_selectedVendorIds.has(v.id)?'background:var(--light-blue)':''}">
+        <input type="checkbox" ${_selectedVendorIds.has(v.id)?'checked':''} onchange="toggleVendorSelect('${v.id}')" style="width:16px;height:16px;cursor:pointer" />
+        <span style="font-size:13px">${v.name}</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--gray-500)">${v.brand_keyword_count||0}B / ${v.product_keyword_count||0}P</span>
+      </label>`).join('');
+}
+
+function toggleVendorSelect(id) {
+  if (_selectedVendorIds.has(id)) _selectedVendorIds.delete(id);
+  else _selectedVendorIds.add(id);
+  document.getElementById('f-vendor-count').textContent = _selectedVendorIds.size + ' selected';
+  filterAssignVendors();
+}
+
+async function assignVendors() {
+  if (_selectedVendorIds.size === 0) return alert('Select at least one vendor');
+  try {
+    for (const vendor_id of _selectedVendorIds) {
+      await api('/clients/' + selectedClientId + '/vendors', { method: 'POST', body: JSON.stringify({ vendor_id }) });
+    }
+    closeModal();
+    loadClientVendors();
+    loadClients();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function unassignVendor(vendorId) {
+  if (!confirm('Unassign this vendor from the client?')) return;
+  try {
+    await api('/clients/' + selectedClientId + '/vendors/' + vendorId, { method: 'DELETE' });
+    loadClientVendors();
+    loadClients();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+// ==================== KEYWORD MODALS ====================
+function showAddKeywordModal(type) {
+  let html = '';
+  if (type === 'master') {
+    html = `<h3>Add Master Keywords</h3>
+      <div class="form-group"><label>Keywords (one per line)</label><textarea id="f-kw" rows="6" placeholder="sectional sofa\ndining table\nbedroom set"></textarea></div>
+      <div class="form-group"><label>Category (optional)</label><input id="f-cat" placeholder="living room" /></div>
+      <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="addMasterKeywords()">Add</button></div>`;
+  } else {
+    html = `<h3>Add General Negatives</h3>
+      <div class="form-group"><label>Keywords (one per line)</label><textarea id="f-kw" rows="6" placeholder="used\nresell\ncraigslist"></textarea></div>
+      <div class="form-group"><label>Reason (optional)</label><input id="f-reason" placeholder="Not relevant to our products" /></div>
+      <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="addGeneralNegatives()">Add</button></div>`;
+  }
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+async function addMasterKeywords() {
+  const lines = document.getElementById('f-kw').value.split('\n').filter(l => l.trim());
+  const category = document.getElementById('f-cat').value || null;
+  await api('/keywords/master', { method: 'POST', body: JSON.stringify({ keywords: lines.map(keyword => ({ keyword, category })) }) });
+  closeModal(); loadMasterKeywordsView();
+}
+
+async function addGeneralNegatives() {
+  const lines = document.getElementById('f-kw').value.split('\n').filter(l => l.trim());
+  const reason = document.getElementById('f-reason').value || null;
+  await api('/keywords/negatives', { method: 'POST', body: JSON.stringify({ keywords: lines.map(keyword => ({ keyword, reason })) }) });
+  closeModal(); loadGeneralNegatives();
+}
+
+// ==================== GENERAL NEGATIVES ====================
+async function loadGeneralNegatives() {
+  try {
+    const data = await api('/keywords/negatives');
+    const tbody = document.querySelector('#negativesTable tbody');
+    tbody.innerHTML = data.map(k => `<tr>
+      <td><strong>${escapeHtml(k.keyword)}</strong></td>
+      <td>
+        <select onchange="updateNegativeMatchType('${k.id}', this.value)" style="padding:4px 6px;font-size:12px">
+          <option value="phrase"${(k.match_type || 'phrase') === 'phrase' ? ' selected' : ''}>Phrase</option>
+          <option value="exact"${k.match_type === 'exact' ? ' selected' : ''}>Exact</option>
+          <option value="broad"${k.match_type === 'broad' ? ' selected' : ''}>Broad</option>
+        </select>
+      </td>
+      <td>${escapeHtml(k.reason) || '-'}</td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteGeneralNegative('${k.id}')">x</button></td>
+    </tr>`).join('');
+  } catch (err) { console.error(err); }
+}
+
+async function deleteGeneralNegative(id) {
+  if (!confirm('Delete this general negative?')) return;
+  await api('/keywords/negatives/' + id, { method: 'DELETE' });
+  loadGeneralNegatives();
+}
+
+async function renderNegativesSyncBanner() {
+  const banner = document.getElementById('negativesSyncBanner');
+  if (!banner) return;
+  try {
+    const clients = await api('/clients');
+    const active = clients.filter(c => c.is_active && c.has_refresh_token);
+    const stale = active.filter(c => {
+      if (!c.master_negatives_synced_at) return true;
+      const ageH = (Date.now() - new Date(c.master_negatives_synced_at).getTime()) / 3_600_000;
+      return ageH > 24;
+    });
+    if (stale.length === 0) {
+      banner.style.display = 'block';
+      banner.style.background = '#e8f5e9';
+      banner.style.color = '#1b5e20';
+      banner.innerHTML = `<strong>✓ All ${active.length} active clients synced within the last 24h.</strong>`;
+    } else {
+      banner.style.display = 'block';
+      banner.style.background = '#fff3e0';
+      banner.style.color = '#6a3500';
+      banner.innerHTML = `<strong>${stale.length} of ${active.length} active clients</strong> haven't been synced in the last 24h (or ever). Click <em>Sync All Clients</em> to push the current list.`;
+    }
+  } catch (err) {
+    banner.style.display = 'none';
+  }
+}
+
+async function syncAllClientsNegatives() {
+  if (!confirm('Push the current general negatives list to every active client\'s master SharedSet in Google Ads?')) return;
+  const banner = document.getElementById('negativesSyncBanner');
+  const result = document.getElementById('negativesSyncResult');
+  if (banner) {
+    banner.style.display = 'block';
+    banner.style.background = '#f5f5f5';
+    banner.style.color = 'var(--gray-700)';
+    banner.innerHTML = '<strong>Syncing all clients...</strong> This may take a minute.';
+  }
+  if (result) result.style.display = 'none';
+  try {
+    const r = await api('/keywords/negatives/sync-all', { method: 'POST' });
+    if (banner) {
+      banner.style.background = r.errors > 0 ? '#ffebee' : '#e8f5e9';
+      banner.style.color = r.errors > 0 ? '#b71c1c' : '#1b5e20';
+      banner.innerHTML = `<strong>${r.ok} synced</strong>${r.errors ? `, <strong style="color:var(--red)">${r.errors} errors</strong>` : ''}${r.skipped ? `, ${r.skipped} skipped (not connected)` : ''}.`;
+    }
+    if (result) {
+      result.style.display = 'block';
+      const line = (label, y) => y ? `    ${label}: +${y.added}, -${y.removed} (${y.total} total), attached ${y.attached}${y.errors ? ` [${y.errors} errors]` : ''}` : `    ${label}: n/a`;
+      result.textContent = r.results.map(x => {
+        if (x.status === 'skipped') return `— ${x.name}: skipped (${x.reason})`;
+        if (x.status === 'error') return `✗ ${x.name}: ${x.error}`;
+        // ok: { general, vendors: [{vendor, brand, product}, ...] }
+        const chunks = [`✓ ${x.name}`, line('Master Negatives', x.general)];
+        for (const v of (x.vendors || [])) {
+          chunks.push(`    • ${v.vendor}`);
+          chunks.push('    ' + line('Brand', v.brand).trimStart());
+          chunks.push('    ' + line('Product', v.product).trimStart());
+        }
+        return chunks.join('\n');
+      }).join('\n\n');
+    }
+  } catch (err) {
+    if (banner) {
+      banner.style.background = '#ffebee';
+      banner.style.color = '#b71c1c';
+      banner.innerHTML = `<strong>Sync failed:</strong> ${err.message}`;
+    }
+  }
+}
+
+async function updateNegativeMatchType(id, match_type) {
+  try {
+    await api('/keywords/negatives/' + id, { method: 'PATCH', body: JSON.stringify({ match_type }) });
+  } catch (err) {
+    alert('Failed to update match type: ' + err.message);
+    loadGeneralNegatives();
+  }
+}
+
+// ==================== RUN LOGS ====================
+async function loadRunLogs() {
+  try {
+    const { data } = await api('/logs?limit=100');
+    const tbody = document.querySelector('#logsTable tbody');
+    tbody.innerHTML = data.map(l => {
+      const duration = l.details_json?.duration_ms ? (l.details_json.duration_ms / 1000).toFixed(1) + 's' : '-';
+      return `<tr>
+        <td><strong>${l.clients?.name || '-'}</strong></td>
+        <td>${new Date(l.started_at).toLocaleString()}</td>
+        <td><span class="badge ${l.status}">${l.status}</span></td>
+        <td>${(l.queries_processed || 0).toLocaleString()}</td>
+        <td>${(l.queries_matched || 0).toLocaleString()}</td>
+        <td>${(l.negatives_added || 0).toLocaleString()}</td>
+        <td>${duration}</td>
+      </tr>`;
+    }).join('');
+  } catch (err) { console.error(err); }
+}
+
+// ==================== MODAL ====================
+function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
+document.getElementById('modalOverlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+
+// ==================== USER MANAGEMENT (admin only) ====================
+async function loadUsers() {
+  if (!hasRole('admin')) return;
+  try {
+    const users = await api('/users');
+    const tbody = document.querySelector('#usersTable tbody');
+    tbody.innerHTML = users.map(u => `<tr>
+      <td><strong>${u.name}</strong></td>
+      <td>${u.email}</td>
+      <td><span class="badge ${u.role === 'admin' ? 'error' : u.role === 'account_manager' ? 'running' : u.role === 'agency' ? 'active' : ''}">${u.role.replace('_', ' ')}</span></td>
+      <td><span class="badge ${u.is_active ? 'active' : 'inactive'}">${u.is_active ? 'Active' : 'Disabled'}</span></td>
+      <td>${u.assigned_clients.length > 0 ? u.assigned_clients.map(c => c.client_name).join(', ') : '<span style="color:var(--gray-500)">—</span>'}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm" style="background:var(--gray-200);color:var(--gray-700)" onclick="showEditUserModal('${u.id}')">Edit</button>
+        <button class="btn btn-sm" style="background:#4285F4;color:#fff" onclick="showAssignClientsModal('${u.id}','${u.name.replace(/'/g,"\\'")}')">Clients</button>
+      </td>
+    </tr>`).join('');
+  } catch (err) { console.error('Error loading users:', err); }
+}
+
+async function showAddUserModal() {
+  let clientOptions = '';
+  try {
+    const allClients = await api('/clients');
+    clientOptions = allClients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  } catch (e) { /* ignore — selector just won't have options */ }
+  document.getElementById('modalContent').innerHTML = `
+    <h3>Add User</h3>
+    <div class="form-group"><label>Name</label><input id="fu-name" placeholder="John Smith" /></div>
+    <div class="form-group"><label>Email</label><input id="fu-email" type="email" placeholder="john@example.com" /></div>
+    <div class="form-group"><label>Password</label><input id="fu-password" type="password" placeholder="Min 6 characters" /></div>
+    <div class="form-group"><label>Role</label>
+      <select id="fu-role" onchange="document.getElementById('fu-client-group').style.display=this.value==='client'?'block':'none'">
+        <option value="">Select role...</option>
+        <option value="client">Client (view-only, assigned accounts)</option>
+        <option value="agency">Agency (manage assigned clients & vendors)</option>
+        <option value="account_manager">Account Manager (full keyword & campaign access)</option>
+        <option value="admin">Admin (full access including user management)</option>
+      </select>
+    </div>
+    <div class="form-group" id="fu-client-group" style="display:none">
+      <label>Assign Client</label>
+      <select id="fu-client-id">
+        <option value="">Select client...</option>
+        ${clientOptions}
+      </select>
+      <small style="color:var(--gray-500)">Which client account this user can access</small>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="createUser()">Create User</button>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+async function createUser() {
+  const name = document.getElementById('fu-name').value.trim();
+  const email = document.getElementById('fu-email').value.trim();
+  const password = document.getElementById('fu-password').value;
+  const role = document.getElementById('fu-role').value;
+  const clientId = document.getElementById('fu-client-id')?.value;
+  if (!name || !email || !password || !role) return alert('All fields are required');
+  if (role === 'client' && !clientId) return alert('Please select a client to assign');
+  if (password.length < 6) return alert('Password must be at least 6 characters');
+  try {
+    const newUser = await api('/users', { method: 'POST', body: JSON.stringify({ name, email, password, role }) });
+    // Auto-assign selected client for client-role users
+    if (clientId && newUser?.id) {
+      await api('/users/' + newUser.id + '/clients', { method: 'PUT', body: JSON.stringify({ client_ids: [clientId] }) });
+    }
+    closeModal();
+    loadUsers();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function showEditUserModal(userId) {
+  try {
+    const users = await api('/users');
+    const u = users.find(x => x.id === userId);
+    if (!u) return alert('User not found');
+    document.getElementById('modalContent').innerHTML = `
+      <h3>Edit User</h3>
+      <div class="form-group"><label>Name</label><input id="feu-name" value="${u.name}" /></div>
+      <div class="form-group"><label>Email</label><input value="${u.email}" disabled style="background:var(--gray-100)" /></div>
+      <div class="form-group"><label>Role</label>
+        <select id="feu-role">
+          <option value="client" ${u.role==='client'?'selected':''}>Client</option>
+          <option value="agency" ${u.role==='agency'?'selected':''}>Agency</option>
+          <option value="account_manager" ${u.role==='account_manager'?'selected':''}>Account Manager</option>
+          <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Status</label>
+        <select id="feu-active">
+          <option value="true" ${u.is_active?'selected':''}>Active</option>
+          <option value="false" ${!u.is_active?'selected':''}>Disabled</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveUser('${userId}')">Save</button>
+      </div>`;
+    document.getElementById('modalOverlay').classList.add('active');
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function saveUser(userId) {
+  try {
+    await api('/users/' + userId, { method: 'PATCH', body: JSON.stringify({
+      name: document.getElementById('feu-name').value.trim(),
+      role: document.getElementById('feu-role').value,
+      is_active: document.getElementById('feu-active').value === 'true',
+    })});
+    closeModal();
+    loadUsers();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function showAssignClientsModal(userId, userName) {
+  try {
+    const [allClients, users] = await Promise.all([api('/clients'), api('/users')]);
+    const user = users.find(u => u.id === userId);
+    const assignedIds = (user?.assigned_clients || []).map(c => c.client_id);
+    document.getElementById('modalContent').innerHTML = `
+      <h3>Assign Clients — ${userName}</h3>
+      <p style="font-size:13px;color:var(--gray-500);margin-bottom:12px">Select which clients this user can access:</p>
+      <div style="max-height:300px;overflow-y:auto;border:1px solid var(--gray-300);border-radius:4px">
+        ${allClients.map(c => `<label style="display:flex;align-items:center;padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--gray-100);gap:8px;${assignedIds.includes(c.id)?'background:var(--light-blue)':''}">
+          <input type="checkbox" class="user-client-cb" value="${c.id}" ${assignedIds.includes(c.id)?'checked':''} style="width:16px;height:16px;cursor:pointer" />
+          <span style="font-size:13px">${c.name}</span>
+        </label>`).join('')}
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveUserClients('${userId}')">Save Assignments</button>
+      </div>`;
+    document.getElementById('modalOverlay').classList.add('active');
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function saveUserClients(userId) {
+  const checked = document.querySelectorAll('.user-client-cb:checked');
+  const client_ids = [...checked].map(cb => cb.value);
+  try {
+    await api('/users/' + userId + '/clients', { method: 'PUT', body: JSON.stringify({ client_ids }) });
+    closeModal();
+    loadUsers();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+// ==================== SETTINGS ====================
+// Cached campaign-name prefix so campaign-preview lists match what the backend
+// will actually create. Refreshed on settings load/save and at app init.
+let _campaignPrefix = 'ADS';
+
+async function refreshCampaignPrefix() {
+  try {
+    const s = await api('/settings');
+    _campaignPrefix = s.campaign_name_prefix || 'ADS';
+  } catch (_) { /* non-admins can't read settings; preview falls back to default */ }
+}
+
+async function loadSettings() {
+  testConnection();
+  loadUsers();
+  try {
+    const s = await api('/settings');
+    document.getElementById('settings-date-range').value = s.default_date_range || 'TODAY';
+    document.getElementById('settings-threshold').value = s.default_impression_threshold ?? 0;
+    document.getElementById('settings-campaign-prefix').value = s.campaign_name_prefix || 'ADS';
+    document.getElementById('settings-feed-label').value = s.default_feed_label || '';
+    _campaignPrefix = s.campaign_name_prefix || 'ADS';
+    document.getElementById('settings-default-mcc').value = s.default_mcc_account_id || '';
+    document.getElementById('settings-cron-enabled').checked = s.cron_enabled !== false;
+    document.getElementById('settings-default-block-apps').checked = s.default_block_mobile_apps !== false;
+    document.getElementById('settings-mobile-app-cat').value = s.mobile_app_category_id || '69500';
+    const aud = Array.isArray(s.default_observation_audiences) ? s.default_observation_audiences : [];
+    document.getElementById('settings-observation-audiences').value = aud.join('\n');
+  } catch (err) {
+    const status = document.getElementById('settings-save-status');
+    if (status) status.innerHTML = '<span style="color:var(--red)">Failed to load defaults: ' + err.message + '</span>';
+  }
+}
+
+async function testConnection() {
+  const status = document.getElementById('connection-status');
+  status.innerHTML = '<span style="color:var(--orange)">Testing connection...</span>';
+  try {
+    const res = await api('/logs/stats/health');
+    status.innerHTML = '<span style="color:var(--green);font-weight:600">Connected — ' + (res.active_clients || 0) + ' active clients</span>';
+  } catch (err) {
+    status.innerHTML = '<span style="color:var(--red);font-weight:600">Connection failed: ' + err.message + '</span>';
+  }
+}
+
+function toggleKeyVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = 'Hide';
+  } else {
+    input.type = 'password';
+    btn.textContent = 'Show';
+  }
+}
+
+async function saveEngineDefaults() {
+  const status = document.getElementById('settings-save-status');
+  status.innerHTML = '<span style="color:var(--gray-500)">Saving...</span>';
+  const audienceList = document.getElementById('settings-observation-audiences').value
+    .split(/\s+/).map(s => s.trim()).filter(Boolean);
+  const body = {
+    default_date_range: document.getElementById('settings-date-range').value,
+    default_impression_threshold: parseInt(document.getElementById('settings-threshold').value, 10) || 0,
+    campaign_name_prefix: document.getElementById('settings-campaign-prefix').value.trim() || 'ADS',
+    default_feed_label: document.getElementById('settings-feed-label').value.trim() || null,
+    default_mcc_account_id: document.getElementById('settings-default-mcc').value.trim() || null,
+    cron_enabled: document.getElementById('settings-cron-enabled').checked,
+    default_block_mobile_apps: document.getElementById('settings-default-block-apps').checked,
+    mobile_app_category_id: document.getElementById('settings-mobile-app-cat').value.trim() || '69500',
+    default_observation_audiences: audienceList,
+  };
+  try {
+    await api('/settings', { method: 'PUT', body: JSON.stringify(body) });
+    _campaignPrefix = body.campaign_name_prefix;
+    status.innerHTML = '<span style="color:var(--green);font-weight:600">Saved.</span>';
+    setTimeout(() => { status.innerHTML = ''; }, 2500);
+  } catch (err) {
+    status.innerHTML = '<span style="color:var(--red);font-weight:600">Error: ' + err.message + '</span>';
+  }
+}
+
+// ==================== INIT ====================
+
+// Handle OAuth callback redirect
+const _oauthParams = new URLSearchParams(window.location.search);
+if (_oauthParams.get('oauth') === 'success') {
+  const _oauthClientId = _oauthParams.get('clientId');
+  window.history.replaceState({}, '', '/');
+  setTimeout(() => {
+    showSection('clients', document.querySelector('.nav button:nth-child(2)'));
+    if (_oauthClientId) showAccountPickerModal(_oauthClientId);
+  }, 300);
+} else if (_oauthParams.get('oauth') === 'error') {
+  alert('Google Ads connection failed: ' + (_oauthParams.get('message') || 'Unknown error'));
+  window.history.replaceState({}, '', '/');
+}
+
+refreshCampaignPrefix();
+loadDashboard();
+</script>
+</body>
+</html>

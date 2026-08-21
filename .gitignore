@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Environment / secrets — NEVER commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+service-account*.json
+
+# Your own seed data (industry-specific, often proprietary)
+sql/seed-master-keywords.json
+sql/seed-general-negatives.local.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Logs & build artifacts
+*.log
+npm-debug.log*
+*.zip
+coverage/
+dist/
+
+# Local editor/launch config
+.claude/

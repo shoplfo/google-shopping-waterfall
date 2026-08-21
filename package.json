@@ -1,0 +1,49 @@
+{
+  "name": "shopping-waterfall-engine",
+  "version": "1.0.0",
+  "description": "Automated negative-keyword management for Google Shopping priority-waterfall campaigns. Self-hosted, multi-account.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "cron": "node src/cron.js",
+    "seed": "node sql/seed.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "bcryptjs": "^3.0.3",
+    "connect-pg-simple": "^10.0.0",
+    "cors": "^2.8.5",
+    "csv-parse": "^5.5.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-session": "^1.19.0",
+    "google-ads-api": "^23.0.0",
+    "googleapis": "^171.4.0",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "google-ads",
+    "google-shopping",
+    "negative-keywords",
+    "ppc",
+    "sem",
+    "adwords",
+    "waterfall",
+    "shopping-campaigns",
+    "ecommerce"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoplfo/google-shopping-waterfall.git"
+  }
+}
