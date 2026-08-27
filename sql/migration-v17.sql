@@ -1,8 +1,8 @@
 -- Migration v17: Move Brand/Product negatives to campaign level
 -- Brand + Product keyword lists are moving off SharedSets onto direct
 -- CampaignCriterion negatives (campaign_criterion with negative=TRUE).
--- This removes the 1000-per-mutate SharedSet ceiling we kept hitting on
--- large vendors like Ashley (~3000 keywords) and the 5000/SharedSet cap.
+-- This removes the 1000-per-mutate SharedSet ceiling that large vendors
+-- (~3000 keywords) kept hitting, and the 5000-criteria/SharedSet cap.
 -- After this, each vendor campaign directly owns its negatives
 -- (Google allows up to 10,000 per campaign).
 --

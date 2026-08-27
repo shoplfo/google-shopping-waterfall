@@ -25,7 +25,7 @@ async function setup() {
   if (error && error.code === 'PGRST205') {
     console.log('password_reset_tokens table does NOT exist.');
     console.log('Please run sql/migration-v8.sql in the Supabase SQL Editor:');
-    console.log('  https://supabase.com/dashboard/project/mnftfrzospzhyifgsnjj/sql/new');
+    console.log('  https://supabase.com/dashboard/project/_/sql/new');
     console.log('\nSQL to run:');
     const fs = require('fs');
     const sql = fs.readFileSync('sql/migration-v8.sql', 'utf8');

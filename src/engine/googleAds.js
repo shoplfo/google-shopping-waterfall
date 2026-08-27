@@ -706,12 +706,12 @@ async function attachSharedSetToCampaigns(customer, sharedSetResourceName, campa
 // Used for per-vendor Brand / Product keyword lists — each list lives on
 // exactly one campaign, so the SharedSet indirection isn't worth it.
 // Google's per-campaign negative-keyword cap is 10,000, and the standard
-// mutate batch is 5000 ops — Ashley's ~3K keywords land in a single request.
+// mutate batch is 5000 ops — a ~3K keyword list lands in a single request.
 
 /**
  * Reconcile one campaign's negative keywords against a desired list.
  * Diff-add / remove, idempotent. Chunked at 5000 ops per mutate request
- * (Google's standard campaign_criterion batch limit — Ashley's ~3K fits in 1).
+ * (Google's standard campaign_criterion batch limit — a ~3K list fits in 1).
  * Per-chunk try/catch so a partial failure doesn't abandon remaining chunks.
  *
  * @param {object} customer - google-ads-api customer client

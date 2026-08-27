@@ -1,5 +1,5 @@
 -- Migration v9: Role-Based Access Control (RBAC)
--- Run in Supabase SQL Editor: https://supabase.com/dashboard/project/mnftfrzospzhyifgsnjj/sql/new
+-- Run in Supabase SQL Editor: https://supabase.com/dashboard/project/_/sql/new
 
 -- 1. User-to-client assignment table
 CREATE TABLE IF NOT EXISTS user_clients (
