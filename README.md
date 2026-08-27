@@ -127,12 +127,12 @@ And optionally an account-wide block on mobile-app placements.
 
 ## What you need before you start
 
-You'll need accounts on three services. **The app itself is free; the services have a free tier that's enough to start.**
+Three things. **The app itself is free and MIT licensed; the services it depends on have free tiers that are enough to start.**
 
 | Service | What for | Cost | Alternatives |
 |---|---|---|---|
 | **[Supabase](https://supabase.com)** | Postgres database | Free tier is plenty | Any Postgres — Neon, Railway PG, self-hosted. Needs code changes: the app uses the Supabase JS client, not raw SQL. |
-| **[Railway](https://railway.app)** | Hosting web + cron | ~$5/mo | Render, Fly.io, a VPS, or your own machine. Any Node host with a scheduler. |
+| **Somewhere to run Node 18+** | The web server + an hourly cron | $0 on your own machine | Any VPS, or a platform like Railway / Render / Fly.io (~$5/mo). Nothing in the code is platform-specific. |
 | **Google Ads API access** | Reading/writing campaigns | Free | None — required. |
 
 ### Google Ads API access is the slow part
@@ -228,14 +228,35 @@ Or manage them in the dashboard's **Master Keywords** tab. (That file is gitigno
 5. Click **Sync** to push the negative lists.
 6. **Check the campaigns in Google Ads.** Then unpause when you're satisfied.
 
-### 6. Deploy
+### 6. Keep it running
 
-Push to GitHub, connect the repo in Railway, add the same env vars, and add a **Cron service** on the same repo:
+The app is two processes: the **web server** (`npm start`) and an **hourly cron**
+(`npm run cron`, a one-shot script that exits when done). Host them however you like —
+there's nothing platform-specific in the code.
 
-- Schedule: `0 * * * *` (hourly)
-- Command: `npm run cron`
+**On your own machine or a VPS — free.** Run the server, then schedule the cron:
 
-Set `OAUTH_CALLBACK_URL` to your production URL **and** add that URL to your Google Cloud OAuth client's authorized redirect URIs — they must match exactly.
+```bash
+# Linux/macOS — crontab -e
+0 * * * * cd /path/to/shopping-waterfall-engine && /usr/bin/node src/cron.js >> cron.log 2>&1
+```
+
+On Windows, use Task Scheduler with a *Daily* trigger set to repeat every 1 hour,
+running `node` with argument `src\cron.js` and the repo as the working directory.
+
+Keep the web server up with `systemd`, `pm2`, `docker`, or just a terminal you don't
+close. The dashboard only needs to be reachable when *you* are using it — but the OAuth
+callback must be reachable by Google when you connect an account.
+
+**On a platform.** Any Node host works. A `railway.toml` is included because that's
+what this was built on, but Render, Fly.io, Heroku, or a plain container are equally
+fine — point the start command at `node src/index.js` and schedule `npm run cron`
+hourly. Platforms without a built-in scheduler can use an external one
+(cron-job.org, GitHub Actions) to hit the app on a timer.
+
+Whichever you pick: set `OAUTH_CALLBACK_URL` to the public URL **and** add that exact
+URL to your Google Cloud OAuth client's authorized redirect URIs. They must match
+character for character.
 
 ---
 
@@ -259,14 +280,17 @@ Adding or removing keywords **does not** push to Google automatically — click 
 
 ## Cost to run
 
-| Item | Typical |
-|---|---|
-| Supabase | $0 (free tier) |
-| Railway (web + cron) | ~$5/mo |
-| Google Ads API | $0 |
-| **Total** | **~$5/mo** plus your ad spend |
+**Running it on your own machine costs nothing.** The only unavoidable cost is your ad spend.
 
-Run it on your own machine or a spare VPS and it's free.
+| Item | Self-hosted | On a platform |
+|---|---|---|
+| Supabase | $0 (free tier) | $0 (free tier) |
+| Hosting (web + cron) | $0 — your machine or an existing VPS | ~$5/mo (Railway, Render, Fly.io…) |
+| Google Ads API | $0 | $0 |
+| **Total** | **$0** | **~$5/mo** |
+
+The app itself is free and MIT licensed — there is no paid tier, no hosted version,
+and nothing phones home.
 
 ---
 

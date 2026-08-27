@@ -16,7 +16,7 @@ See `README.md` for the user-facing explanation of the waterfall strategy and se
 - Node.js 18+ / Express
 - Supabase (Postgres) — service role from backend, session auth for dashboard
 - `google-ads-api` npm v23 (wraps Google Ads API v23, current as of 2026)
-- Railway (web + cron services)
+- Any Node host for the web server + an hourly `npm run cron`
 - Vanilla HTML/JS dashboard at `dashboard/index.html` (no framework)
 
 ## Commands
@@ -25,7 +25,7 @@ See `README.md` for the user-facing explanation of the waterfall strategy and se
 npm install
 npm run dev        # local dev on port 3000 with nodemon
 npm start          # production start
-npm run cron       # one-shot engine run (what Railway Cron calls hourly)
+npm run cron       # one-shot engine run (schedule this hourly)
 ```
 
 ## Project layout
@@ -139,7 +139,7 @@ Four roles (`client` < `agency` < `account_manager` < `admin`) defined in `src/p
 - **Income/demographic targeting is NOT supported on Shopping.** Google rejects `income_range` criteria with `OPERATION_NOT_PERMITTED_FOR_CONTEXT`, trigger=SHOPPING. Feature removed in migration v13. Don't re-add.
 - **Campaigns are created `status: PAUSED`.** They won't show up in Google Ads views filtered to "enabled" or "with spend". User-caused confusion in the past.
 - **Session store is in-memory.** Restarting the server kicks everyone out. Acceptable today; migrate to `connect-pg-simple` if it becomes an issue.
-- **Railway deploy from `master` is automatic.** Push to master = production change. There is no staging environment.
+- **There is no staging environment and no test suite.** Verify changes against the Google Ads UI on a low-budget or test account before trusting them.
 - **Migrations are forward-only, numbered files.** Don't edit old ones. Add `migration-vN+1.sql`. The user runs them by hand in the Supabase SQL Editor and confirms before I push code that depends on new columns.
 
 ## When making changes
