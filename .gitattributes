@@ -1,0 +1,10 @@
+# Normalize line endings so contributors on Windows and Unix don't produce
+# whole-file diffs. Text files are stored as LF in the repo and checked out
+# using each platform's native convention.
+* text=auto
+
+# Always LF, regardless of platform — these are read by tools that care.
+*.sh   text eol=lf
+*.json text eol=lf
+*.sql  text eol=lf
+*.js   text eol=lf
